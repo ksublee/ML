@@ -1,0 +1,4 @@
+.ipynb_checkpoints
+old
+/.quarto/
+**/*.quarto_ipynb

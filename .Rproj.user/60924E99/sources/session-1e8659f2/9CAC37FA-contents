@@ -1,0 +1,35 @@
+project:
+  type: book
+  output-dir: docs
+
+
+book:
+  title: "Stochastic Simulation using R"
+  author: "Kyungsub Lee"
+
+  chapters:
+    - index.qmd
+    - 01.Intro.qmd
+    - 02.Vector.qmd
+    - 03.Basic.qmd
+    - 04.IO.qmd
+    - 05.Functions.qmd
+    - 06.Sophisticated_data_structures.qmd
+    - 07.Numerical_integration.qmd
+    - 08.Probability.qmd
+    - 09.Random_variable.qmd
+    - 10.Discrete_random_variable.qmd
+    - 11.Continuous_random_variable.qmd
+    - 12.More_on_simulation.qmd
+    - 13.Stochastic_process.qmd
+
+
+format:
+  html:
+    theme: cosmo
+    toc: true
+#  pdf:
+#    documentclass: book
+#    pdf-engine: lualatex
+#    mainfont: "NanumGothic"
+#    geometry: margin=1in

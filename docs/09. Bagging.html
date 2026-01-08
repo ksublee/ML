@@ -1,0 +1,2356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.6.42">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>9&nbsp; 앙상블 기법 – Statistical Machine Learning</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./10. Random forest.html" rel="next">
+<link href="./08. Tree.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-2f5df379a58b258e96c21c0638c20c03.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-8da5b4427184b79ecddefad3d342027e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.6/require.min.js" integrity="sha512-c3Nl8+7g4LMSTdrm621y7kf9v3SDPnhxLNhcjFJbKECVnmZHTdo+IRO05sNLTH/D3vA6u1X32ehoLC7WFVdheg==" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09. Bagging.html"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">앙상블 기법</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Statistical Machine Learning</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Course Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01. Introduction.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">통계적 기계 학습 개요</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02. Model_evaluation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">모형 정확성 평가</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03. Linear regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Linear regression</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04. Classification - Logistic Regression.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Classification</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05. Classficatrion - LDA.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Linear discriminant analysis</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06. Resampling.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Resampling method</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07. Regularization.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Linear model selection and model regularization</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08. Tree.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree-based method</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09. Bagging.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">앙상블 기법</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10. Random forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Random forest</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11. Boosting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Boosting</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12. XGBoost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">XGBoost</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./13. LightGBM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">LightGBM</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14. Unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unsupervised vs Supervised Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./15. SVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Support vector machine</span></span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#voting" id="toc-voting" class="nav-link active" data-scroll-target="#voting"><span class="header-section-number">9.1</span> Voting</a></li>
+  <li><a href="#bagging" id="toc-bagging" class="nav-link" data-scroll-target="#bagging"><span class="header-section-number">9.2</span> Bagging</a>
+  <ul class="collapse">
+  <li><a href="#bootstrap" id="toc-bootstrap" class="nav-link" data-scroll-target="#bootstrap"><span class="header-section-number">9.2.1</span> Bootstrap</a></li>
+  <li><a href="#예제" id="toc-예제" class="nav-link" data-scroll-target="#예제"><span class="header-section-number">9.2.2</span> 예제</a></li>
+  <li><a href="#out-of-bag-error" id="toc-out-of-bag-error" class="nav-link" data-scroll-target="#out-of-bag-error"><span class="header-section-number">9.2.3</span> Out-of-bag error</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">앙상블 기법</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<hr>
+<p>앙상블 기법은 머신러닝에서 여러 개의 모델을 조합하여 더 나은 예측 성능을 도출하는 기법을 의미한다.</p>
+<p>앞에서 학습한 트리 모형만으로는 예측력이 떨어지기 때문에 일련의 트리들을 종합하여 더 나은 방법을 모색할 수 있다.</p>
+<p>예를 들어, 생성된 트리들을 바탕으로 투표 방법과 다수결 원칙을 이용하여 예측하는 방법이 있다.</p>
+<p>여러 개의 예측기로부터 예측을 종합하여 더 좋은 예측을 얻는 방법인 앙상블 학습 (ensemble learning)을 이용하는 것이다.</p>
+<p>먼저 트리 모델을 통해 앙상블 기법들을 살펴볼 것이지만, 앙상블 학습은 트리 뿐만이 아닌 다른 머신 러닝 기법에도 이용된다.</p>
+<p>앙상블 방법은 개별 모델의 한계를 보완하고, 과적합을 방지하며, 전반적인 모델 성능을 향상시킬 수 있다.</p>
+<p>앙상블 기법은 앙상블에 이용하는 분류기들이 독립적일 경우 더 효과가 높다.</p>
+<p>주요한 앙상블 기법로 크게 배깅과 부스팅으로 구분할 수 있다.</p>
+<p>또한 간단한 투표 알고리즘 또한 앙상블 기법으로 볼 수 있다.</p>
+<section id="voting" class="level2" data-number="9.1">
+<h2 data-number="9.1" class="anchored" data-anchor-id="voting"><span class="header-section-number">9.1</span> Voting</h2>
+<p>투표 앙상블 방법은 우리가 주요하게 살펴볼 내용은 아니지만, 앙상블 방법에 대한 대략적인 직관을 설명할 수 있기에 간단히 살펴보도록 한다.</p>
+<section id="sklearn.ensemble.votingclassifier" class="level4" data-number="9.1.0.1">
+<h4 data-number="9.1.0.1" class="anchored" data-anchor-id="sklearn.ensemble.votingclassifier"><span class="header-section-number">9.1.0.1</span> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html"><code>sklearn.ensemble.VotingClassifier</code></a></h4>
+<p><code>sklearn.ensemble.VotingClassifier</code>는 다양한 분류 모델들의 예측 결과를 결합하여 최종 예측값을 도출하는 ensemble 방법을 구현하였다.</p>
+<p>이 방법론은 각 분류 모델의 예측값들을 투표하여 다수결 원칙에 따라 최종 예측값을 도출한다.</p>
+<p>이때, 각 분류 모델들이 동등하게 기여할 수 있도록 각 모델의 가중치를 조정할 수 있다.</p>
+<p><code>sklearn.ensemble.VotingClassifier</code>는 hard voting과 soft voting 방식을 지원한다.</p>
+<p>hard voting은 다수결 원칙에 따라 가장 많이 선택된 클래스를 최종 예측값으로 선택하며, soft voting은 각 클래스에 대한 확률 예측값을 평균내어 가장 높은 확률값을 가지는 클래스를 선택한다.</p>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_moons.html"><code>sklearn.datasets.makes_moons</code></a> 데이터를 이용하여 간단한 예제를 진행해 보자.</p>
+<div id="cell-2" class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> make_moons</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> make_moons(n_samples<span class="op">=</span><span class="dv">500</span>, noise<span class="op">=</span><span class="fl">0.30</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>앙상블 방법에 대해 간단히 살펴보기 위해, 몇 가지 분류기들을 정의하여 살펴보자.</p>
+<p>이전에 공부했던 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.LogisticRegression.html"><code>LogisticRegression</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.naive_bayes.GaussianNB.html"><code>GaussianNB</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.discriminant_analysis.QuadraticDiscriminantAnalysis.html"><code>QuadratciDiscriminatAnalysis</code></a>, <a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html"><code>DecisionTreeClassifier</code></a> 들을 활용해 보자.</p>
+<div id="cell-4" class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.naive_bayes <span class="im">import</span> GaussianNB</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.discriminant_analysis <span class="im">import</span> QuadraticDiscriminantAnalysis</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>lr <span class="op">=</span> LogisticRegression()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>tclf <span class="op">=</span> DecisionTreeClassifier()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>gnb <span class="op">=</span> GaussianNB()</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>qda <span class="op">=</span> QuadraticDiscriminantAnalysis()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.VotingClassifier.html"><code>sklearn.ensemble.VotingClassifier</code></a>는 몇 가지 분류기를 리스트로 입력받아, 투표를 하는 데에 활용된다.</p>
+<p><code>estimators</code>의 입력 인자로서 <code>(str, estimator)</code>로 구성된 tuple들의 리스트를 전달한다. - <code>str</code>은 문자열로서 적절한 이름 - <code>estimator</code>는 활용할 모형</p>
+<div id="cell-6" class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> VotingClassifier</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>eclf <span class="op">=</span> VotingClassifier(estimators<span class="op">=</span>[(<span class="st">'log_reg'</span>, lr), (<span class="st">'tree'</span>, tclf), (<span class="st">'gauss_nb'</span>, gnb), (<span class="st">'quadratic'</span>, qda)], voting<span class="op">=</span><span class="st">'hard'</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>eclf.fit(X_train, y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="4">
+<style>#sk-container-id-1 {color: black;}#sk-container-id-1 pre{padding: 0;}#sk-container-id-1 div.sk-toggleable {background-color: white;}#sk-container-id-1 label.sk-toggleable__label {cursor: pointer;display: block;width: 100%;margin-bottom: 0;padding: 0.3em;box-sizing: border-box;text-align: center;}#sk-container-id-1 label.sk-toggleable__label-arrow:before {content: "▸";float: left;margin-right: 0.25em;color: #696969;}#sk-container-id-1 label.sk-toggleable__label-arrow:hover:before {color: black;}#sk-container-id-1 div.sk-estimator:hover label.sk-toggleable__label-arrow:before {color: black;}#sk-container-id-1 div.sk-toggleable__content {max-height: 0;max-width: 0;overflow: hidden;text-align: left;background-color: #f0f8ff;}#sk-container-id-1 div.sk-toggleable__content pre {margin: 0.2em;color: black;border-radius: 0.25em;background-color: #f0f8ff;}#sk-container-id-1 input.sk-toggleable__control:checked~div.sk-toggleable__content {max-height: 200px;max-width: 100%;overflow: auto;}#sk-container-id-1 input.sk-toggleable__control:checked~label.sk-toggleable__label-arrow:before {content: "▾";}#sk-container-id-1 div.sk-estimator input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-label input.sk-toggleable__control:checked~label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 input.sk-hidden--visually {border: 0;clip: rect(1px 1px 1px 1px);clip: rect(1px, 1px, 1px, 1px);height: 1px;margin: -1px;overflow: hidden;padding: 0;position: absolute;width: 1px;}#sk-container-id-1 div.sk-estimator {font-family: monospace;background-color: #f0f8ff;border: 1px dotted black;border-radius: 0.25em;box-sizing: border-box;margin-bottom: 0.5em;}#sk-container-id-1 div.sk-estimator:hover {background-color: #d4ebff;}#sk-container-id-1 div.sk-parallel-item::after {content: "";width: 100%;border-bottom: 1px solid gray;flex-grow: 1;}#sk-container-id-1 div.sk-label:hover label.sk-toggleable__label {background-color: #d4ebff;}#sk-container-id-1 div.sk-serial::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: 0;}#sk-container-id-1 div.sk-serial {display: flex;flex-direction: column;align-items: center;background-color: white;padding-right: 0.2em;padding-left: 0.2em;position: relative;}#sk-container-id-1 div.sk-item {position: relative;z-index: 1;}#sk-container-id-1 div.sk-parallel {display: flex;align-items: stretch;justify-content: center;background-color: white;position: relative;}#sk-container-id-1 div.sk-item::before, #sk-container-id-1 div.sk-parallel-item::before {content: "";position: absolute;border-left: 1px solid gray;box-sizing: border-box;top: 0;bottom: 0;left: 50%;z-index: -1;}#sk-container-id-1 div.sk-parallel-item {display: flex;flex-direction: column;z-index: 1;position: relative;background-color: white;}#sk-container-id-1 div.sk-parallel-item:first-child::after {align-self: flex-end;width: 50%;}#sk-container-id-1 div.sk-parallel-item:last-child::after {align-self: flex-start;width: 50%;}#sk-container-id-1 div.sk-parallel-item:only-child::after {width: 0;}#sk-container-id-1 div.sk-dashed-wrapped {border: 1px dashed gray;margin: 0 0.4em 0.5em 0.4em;box-sizing: border-box;padding-bottom: 0.4em;background-color: white;}#sk-container-id-1 div.sk-label label {font-family: monospace;font-weight: bold;display: inline-block;line-height: 1.2em;}#sk-container-id-1 div.sk-label-container {text-align: center;}#sk-container-id-1 div.sk-container {/* jupyter's `normalize.less` sets `[hidden] { display: none; }` but bootstrap.min.css set `[hidden] { display: none !important; }` so we also need the `!important` here to be able to override the default hidden behavior on the sphinx rendered scikit-learn.org. See: https://github.com/scikit-learn/scikit-learn/issues/21755 */display: inline-block !important;position: relative;}#sk-container-id-1 div.sk-text-repr-fallback {display: none;}</style><div id="sk-container-id-1" class="sk-top-container"><div class="sk-text-repr-fallback"><pre>VotingClassifier(estimators=[('log_reg', LogisticRegression()),
+                             ('tree', DecisionTreeClassifier()),
+                             ('gauss_nb', GaussianNB()),
+                             ('quadratic', QuadraticDiscriminantAnalysis())])</pre><b>In a Jupyter environment, please rerun this cell to show the HTML representation or trust the notebook. <br>On GitHub, the HTML representation is unable to render, please try loading this page with nbviewer.org.</b></div><div class="sk-container" hidden=""><div class="sk-item sk-dashed-wrapped"><div class="sk-label-container"><div class="sk-label sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-1" type="checkbox"><label for="sk-estimator-id-1" class="sk-toggleable__label sk-toggleable__label-arrow">VotingClassifier</label><div class="sk-toggleable__content"><pre>VotingClassifier(estimators=[('log_reg', LogisticRegression()),
+                             ('tree', DecisionTreeClassifier()),
+                             ('gauss_nb', GaussianNB()),
+                             ('quadratic', QuadraticDiscriminantAnalysis())])</pre></div></div></div><div class="sk-parallel"><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>log_reg</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-2" type="checkbox"><label for="sk-estimator-id-2" class="sk-toggleable__label sk-toggleable__label-arrow">LogisticRegression</label><div class="sk-toggleable__content"><pre>LogisticRegression()</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>tree</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-3" type="checkbox"><label for="sk-estimator-id-3" class="sk-toggleable__label sk-toggleable__label-arrow">DecisionTreeClassifier</label><div class="sk-toggleable__content"><pre>DecisionTreeClassifier()</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>gauss_nb</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-4" type="checkbox"><label for="sk-estimator-id-4" class="sk-toggleable__label sk-toggleable__label-arrow">GaussianNB</label><div class="sk-toggleable__content"><pre>GaussianNB()</pre></div></div></div></div></div></div><div class="sk-parallel-item"><div class="sk-item"><div class="sk-label-container"><div class="sk-label sk-toggleable"><label>quadratic</label></div></div><div class="sk-serial"><div class="sk-item"><div class="sk-estimator sk-toggleable"><input class="sk-toggleable__control sk-hidden--visually" id="sk-estimator-id-5" type="checkbox"><label for="sk-estimator-id-5" class="sk-toggleable__label sk-toggleable__label-arrow">QuadraticDiscriminantAnalysis</label><div class="sk-toggleable__content"><pre>QuadraticDiscriminantAnalysis()</pre></div></div></div></div></div></div></div></div></div></div>
+</div>
+</div>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.accuracy_score.html"><code>sklearn.metrics.accuracy_score</code></a>를 통해 분류 정확도를 측정해 보자.</p>
+<div id="cell-8" class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>y_pred <span class="op">=</span> eclf.predict(X_test)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(accuracy_score(y_test, y_pred))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>0.848</code></pre>
+</div>
+</div>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.inspection.DecisionBoundaryDisplay.html"><code>sklearn.inspection.DecisionBoundaryDisplay</code></a>를 이용하여 경계선을 보다 쉽게 그릴 수 있다.</p>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.inspection.DecisionBoundaryDisplay.html#sklearn.inspection.DecisionBoundaryDisplay.from_estimator"><code>.from_estimator()</code></a> method를 통하여 그림을 그리며 훈련된 분류기를 전달한다.</p>
+<div id="cell-10" class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.inspection <span class="im">import</span> DecisionBoundaryDisplay</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>_, ax <span class="op">=</span> plt.subplots(<span class="dv">1</span>, <span class="dv">1</span>, sharex<span class="op">=</span><span class="st">"col"</span>, sharey<span class="op">=</span><span class="st">"row"</span>, figsize<span class="op">=</span>(<span class="dv">5</span>,<span class="dv">4</span>))</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>DecisionBoundaryDisplay.from_estimator(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    eclf, X <span class="op">=</span> X, alpha<span class="op">=</span><span class="fl">0.4</span>, ax<span class="op">=</span>ax, response_method<span class="op">=</span><span class="st">"predict"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ax.scatter(X[:, <span class="dv">0</span>], X[:, <span class="dv">1</span>], c <span class="op">=</span> y, s <span class="op">=</span> <span class="dv">20</span>, edgecolor<span class="op">=</span><span class="st">"k"</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">"Voting Classifier"</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="09. Bagging_files/figure-html/cell-6-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>각 개별 분류기의 성능을 살펴보자. 거의 비슷비슷하다.</p>
+<div id="cell-12" class="cell" data-execution_count="7">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>lr.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="7">
+<pre><code>0.848</code></pre>
+</div>
+</div>
+<div id="cell-13" class="cell" data-execution_count="8">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>tclf.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="8">
+<pre><code>0.848</code></pre>
+</div>
+</div>
+<div id="cell-14" class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>gnb.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>0.848</code></pre>
+</div>
+</div>
+<div id="cell-15" class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>qda.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="10">
+<pre><code>0.848</code></pre>
+</div>
+</div>
+<p>Voting 알고리즘의 경우 다양한 분류 알고리즘을 적용할 경우 높은 예측 성능을 보일 수도 있지만, 각 분류 알고리즘의 예측 결과가 비슷하게 나오는 경우에는 개별 방법에 비해, 특별한 성능 향상이 없을 수도 있다.</p>
+<p>또한, 가중치가 없는 voting 알고리즘의 경우, 한 두개의 저성능 모델이 앙상블 방법의 성능 전체를 저하시킬 수도 있다.</p>
+<p>그리고 하나의 머신 러닝 방법이 다른 방법들보다 뚜렷히 좋은 성능을 보일 경우, 앙상블 방법보다는 좋은 성능을 가지는 머신 러닝 방법을 사용하는 것이 나을 수 있다.</p>
+<p>반면, voting 방법은 여러 학습기의 결과를 평균내는 개념이기 때문에, 적은 분산을 제공하며, 이에 따라 전반적인 성능을 향상시킬 수도 있다.</p>
+<p>따라서 voting 방법을 사용하기 위해서는 다양한 테스트를 거쳐 다음을 확인해 보는 것이 좋다.</p>
+<ul>
+<li>투표 방법이 앙상블 방법에 사용된 각 개별 방법보다 좋은 성능을 발휘하고 있는가.</li>
+<li>투표 방법의 결과가 적은 분산을 나타내는가.</li>
+</ul>
+<p>이후로는 트리 모형을 기반으로 하여 보다 구체적인 앙상블 방법들에 대해 알아본다.</p>
+</section>
+</section>
+<section id="bagging" class="level2" data-number="9.2">
+<h2 data-number="9.2" class="anchored" data-anchor-id="bagging"><span class="header-section-number">9.2</span> Bagging</h2>
+<p>배깅 (bagging)은 bootstrap aggregation이라고도 불리우며 통계 학습에서 분산을 줄이기 위해 사용하는 일반적인 방법이다.</p>
+<p>머신러닝 앙상블 방법에서는 학습 데이터 집합을 여러 개의 샘플로 부트스트랩하여, 각 샘플에 서로 다른 모델들을 학습시켜 예측 결과를 결합함으로써 전체적인 예측 성능을 향상시킨다.</p>
+<p>이를 통해 모델의 성능을 향상시키고, 과적합 문제를 줄일 수 있다.</p>
+<p>여러 확률변수들을 평균내는 과정을 거치면 분산은 줄어들게 되는데 배깅도 이 원리에 기반한다.</p>
+<ul>
+<li>예를 들어, 하나의 모델이 노이즈에 민감하게 반응해 예측이 요동친다고 해도, 여러 모델의 예측을 평균내면 이런 요동이 상쇄되어 더 안정적인 예측이 가능하다.</li>
+</ul>
+<p>우리는 트리들을 bagging한 모형을 살펴볼 것이다.</p>
+<ul>
+<li><p>결정 트리(decision tree), 특히, full-grown tree는 일반적으로 분산(variance)이 높은 모델로 과적합이 잘 일어나나, 반대로 다양한 bootstrap 샘플에 대해 각기 다른 모델로 적합되기 적절하다.</p></li>
+<li><p>Bagging은 모델의 분산을 줄여주는 특징이 있으므로, 높은 분산을 가지는 모델(full-grown tree 등)을 base estimator로 하여, 평균인나 투표를 통해 과적합의 영향을 줄이는 역할을 한다.</p></li>
+</ul>
+<p>먼저 bootstrap의 내용을 복습해 본다.</p>
+<section id="bootstrap" class="level3" data-number="9.2.1">
+<h3 data-number="9.2.1" class="anchored" data-anchor-id="bootstrap"><span class="header-section-number">9.2.1</span> Bootstrap</h3>
+<p>Bootstrap은 통계학에서 estimator의 정확성을 측정하는데 사용할 수 있는 유연하고 강력한 방법이다.</p>
+<ul>
+<li>원래의 데이터에서 중복을 허용하여 여러 개의 새로운 표본 데이터를 무작위로 생성하는 방법</li>
+</ul>
+<p>추정량의 표준오차나 신뢰구간을 계산하는 데에 사용할 수 있다.</p>
+<p>만약 모집단의 분포를 이미 알고 있다면 시뮬레이션 방법을 통해 샘플을 계속 생성할 수 있지만 그렇지 않을 경우 Bootstrap을 이용하여 주어진 샘플을 다시 resampling하여 새로운 샘플을 만드는 과정을 취할 수 있다.</p>
+<ul>
+<li>sampling with replacement</li>
+</ul>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA5MAAAMJCAIAAAARcPX7AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAJYcSURBVHhe7f29ctxWuPZ9zlHsvQ9AooOZSWxLqnkzSUXFVJWkUFJA1cwEcmJmtiMpsjIzkoN5q6SnajsVAzlWwFws+QBYPAG3jmDP9fBaXu8y+gtAoxtYd/9/tUpFLALd9w1C7IsgGvy//Q8AAABQA5IrAAAA6kByBQAAQB1IrgAAAKgDyRUAAAB1ILkCQBD/9Z//wWDsYKQDDhgDyRUAgmjECwZjSyMdcMAYSK4AEEQjXjAYWxrpgAPGQHIFgCAa8YLB2NJIBxwwBpIrAAQRPl7E66uijlxqRQUjKpIrAARRZouQ8SJeXxV15FIrKhhRkVwBIIgyW4SMF/H6qqgjl1pRwYiK5AoAQZTZImS8iNdXRR251IoKRlQkVwAIoswWIeNFvL4q6silVlQwoiK5AkAQZbYIGS/i9VVRRy61ooIRFckVAIIos0XIeBGvr4o6cqkVFYyoSK4AEESZLULGi3h9VdSRS62oYERFcgWAIMpsETJexOuroo5cakUFIyqSKwAEUWaLkPEiXl8VdeRSKyoYUZFcASCIMlv0iBeXl5dnZx9OT3/T+PTp02z2d/rEHH1K69y5fUurpamd6NfXlFXUkUutqGBERXIFgCDKbNEpXiiAPnn86JuDg5OTH51cHxwe6hG0qDibVvrH61evtKafYoLJVSWpQqVqr+yhdtRUWuN6HS3mLtR7+dldcgFpYbn3796pSK/ssbBmzeTG1Z32w/yXr7f81BppChgDyRUAgiizRft4oXiqlfVv4ySr4p3Sj8bZ2Yc09Y+Li89+igkmV1Mv7stjYYBTsNOnFArT8hhcXlpYxwWv3kRfEX1WSX3FKfN+8lOveHZgB0iuABBEmS1axgvHuxfHx2n533JCnQ+vnp9scrV8nnL+9KSCnUL5uLFVene0bM+rI/U14KnWzM/rkaaAMZBcASCIMlu0iRfKc15zRdDxOvNhyBtOPLk6ni6sXxFQqT0tjKdrR+rCmzw4PExTBfV75/atLcVxP69HmgLGQHIFgCDKbLE2XuQMtDrALVvNkxNPruLfnmsoqqap61+7b+P36T306Cj/vDF/Ill9lW0Oy0/qkaaAMZBcASCIMlusjRc5AK09Red3a2mUUc8zTq4XF5/1aBr6wJ8taR1/9uzsgx5h/sKD9vykaaG1fHmoatCiCtjS79N76NeRvyKNLrTzt9qXS+1XMDAgkisABFFmi7XxIl8xuTBull4cH3vNMnR6Rqm0fNuQRuPUrBb1RFpN9LFW2OSkoJ8iLbTm36FrQwU7x9ZN0vOw+nWUrz8ud6birKP5lvgZPdIUMAaSKwAEUWaLtfGi5WqiPOQ1y2DkGSUnDc1r5PsxKct6nffv3mmxPFO74a+z/fhpoQvlZm+rsdV411XvjhpfFP278MrXAfnpPNIUMAaSKwAEUWaLtfGi5WrSCEnmmRxSRQk1X1fg31n7JGuZXPXxKMlVGtcMTETvjsoTycrl+nftufMNudTeBQNDIbkCQBBltlgbL1quJiuSqzJTWr6W387lNZ1cXxwfl+G1sUknfvC00FHuYqsXg3a1SUc7PpGcn0sjTQFjILkCQBBltlgbL1quJu2Tq/i0q9c8O/vg1RQWNVPm1378aGmhC5+VzI1sct53WL07Mv9soLH5vl3LT+SRpoAxkFwBIIgyW6yNF0pvXm3tSdAcj8o1l23rh81/2sCXuno4O3q+Hz9OWmhNqU5P7VsoTO2agX4dZTmLp+Vt8hPt7OmAZUiuABBEmS3WxoscetZmOIdRhb+0fM3bLkuu5WNeXl7m7KuxyRuJ/AhpoTU9Y74et7w8dArXDPTrKCO5Yg+RXAEgiDJbrI0X+ZrU1b86V9Tzao2A68llydUnOMtfYV9cfPan8md78OZpoR1l1kZWVs1+nNWN70aPjkokV+whkisABFFmizbxIueeFW9L9zp3bt9qXEnpDeeT6zcHBxpeWds2tnJ4Le9I0ImfNC20oIiciylN55qBrh01kFyxh0iuABBEmS1axgtHyWW/wVeidRKdj7Z+ikZy9VWtOQ7qg0Y09Hu2eudFP2laWEc1z1doyrJqyo+2IrXvQKeO5pFcsYdIrgAQRJktWsYLZTj/iazGvavEf25qYWwVP0W5lWPuSfE3tJSrGpu/fvVKM70vMG3fl59aIy3PyZcuNCrcsfYdLeSvncYO/iqYn8gjTQFjILkCQBBltugUL5R7fDcr5TllPqXPO7dvKdLp4/lftVt+35VW01YaXj99+prjo9bRmvlhN4mJbfp6/+6d34PlocIap121mK8W8FCRioCjvGHLBaSFLrw/yxY00/sC4jbyc2mkKWAMJFcACKLMFj3ihaKbUp0D0MJfss9TrtWalqYKTr2r1+mkX19TVlFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJktQsaLeH1V1JFLrahgREVyBYAgymwRMl7E66uijlxqRQUjKpIrAARRZouQ8SJeXxV15FIrKhhRkVwBIIgyW4SMF/H6qqgjl1pRwYiK5AoAQZTZImS8iNdXRR251IoKRlQkVwAIoswWIeNFvL4q6silVlQwoiK5AkAQZbYIGS/i9VVRRy61ooIRFckVAIIos0XIeBGvr4o6cqkVFYyoSK4AEESZLULGi3h9VdSRS62oYERFcgWAIMpsETJexOuroo5cakUFIyqSKwAEUWaLkPEiXl8VdeRSKyoYUZFcASCIMluEjBfx+qqoI5daUcGIiuQKAEGU2SJkvIjXV0UdudSKCkZUJFcACKLMFiHjRby+KurIpVZUMKIiuQJAEGW2CBkv4vVVUUcutaKCERXJFQCCKLNFyHgRr6+KOnKpFRWMqEiuABBEmS1Cxot4fVXUkUutqGBERXIFgCDKbBEyXsTrq6KOXGpFBSMqkisABFFmi5DxIl5fFXXkUisqGFGRXAEgiDJbhIwX8fqqqCOXWlHBiIrkCgBBlNkiZLyI11dFHbnUigpGVCRXAAiizBYh40W8virqyKVWVDCiIrkCQBBltggZL+L1VVFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJktQsaLeH1V1JFLrahgREVyBYAgymwRMl7E66uijlxqRQUjKpIrAARRZouQ8SJeXxV15FIrKhhRkVwBIIgyW4SMF/H6qqgjl1pRwYiK5AoAQZTZImS8iNdXRR251IoKRlQkVwAIoswWIeNFvL4q6silVlQwoiK5AkAQZbYIGS/i9VVRRy61ooIRFckVAIIos0XIeBGvr4o6cqkVFYyoSK4AEESZLULGi3h9VdSRS62oYERFcgWAIMpsETJexOuroo5cakUFIyqSKwAEUWaLkPEiXl8VdeRSKyoYUZFcASCIMluEjBfx+qqoI5daUcGIiuQKAEGU2SJkvIjXV0UdudSKCkZUJFcACKLMFiHjRby+KurIpVZUMKIiuQJAEGW2CBkv4vVVUUcutaKCERXJFQCCKLMFg7G9kQ44YAwkVwAIohEvGIwtjXTAAWMguQJAEOHjRby+KurIpVZUMKIiuQJAEGW2CBkv4vVVUUcutaKCERXJFQCCKLNFyHgRr6+KOnKpFRWMqEiuABBEmS1Cxot4fVXUkUutqGBERXIFgCDKbBEyXsTrq6KOXGpFBSMqkisABFFmi5DxIl5fFXXkUisqGFGRXAEgiDJbhIwX8fqqqCOXWlHBiIrkCgBBlNkiZLyI11dFHbnUigpGVCRXAAiizBYh40W8virqyKVWVDCiIrkCQBBltggZL+L1VVFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJkt2seLy8vLs7MP79+9+/TpU5qaqk59bW4He6ZrRypJxWxSkjdXXxcXn9NUOy61a8HA4EiuABBEmS1axovXr16Vm9y5fatroNklF5kW2lFHuTsPtZw+t9Ju9owfPC2sNJv9PV+SAmj6dAsKrN8cHJyc/Og4/uTxIw1F4fTpdcqnTlPAGEiuABBEmS3axAslIaWf09PfNBRovJVmFJLSGhPTsq9M+cyblKNNVtvZnvEjp4WVXhwfa80Hh4eKm/rXG2qox7TGSkqrWrlxplYPpSzbsqn8jBppChgDyRUAgiizxdp4cXHxWZmsTC1Kad6wZRjavTZ9lZQ11YviWtbmvOku90zLjlS5eimLVxJV6NS2+jdNraTNlXfTwj8cZ9VdWl7JpXqkKWAMJFcACKLMFmvjhVLL/Mk25Rtt2DLK7F6bvjKlzCePH6WFLna5Z1p29OL4eD5z5zytXJumlri8vNRq88lVG2peMT0tr+Tn8khTwBhIrgAQRJkt+sULRT1t2ObE5Cg69aWsqWzX8lfha21pz7TsaOG5XrXmzRW109QSTq4ajfr1sJrknCvqQnIFgCDKbNEvXijtvTg+TgvT074vZzIPhc7Nf8u/pT3TvqOFvPnac67ic8YPDg/LKK9JjZbh3s/lkaaAMZBcASCIMlv0iBeKd41kMzXt+3JQK4fya+/WtrdnXFta6E7btrzO1RcGeH2feT05+VF7qf1ZZG/ukaaAMZBcASCIMlt0jRd+x0/LO0aNpVNfCpqKa+rI72TS6Jc+t7pnOnXU4DDa/tLbxnnoF8fHnfZG3lYjTQFjILkCQBBltmgfLxRofBGnx5RPu3bqK1M7+c5WnX7jv4M940dOCx35pGmnkpzC/aRds7i38khTwBhIrgAQRJktOsWLi4vPp6e/5d+wK66lT0xM175KOby2v/e+bHvP+GHTQhcqTBuufW9Wg9Kq8ndup9NpV2/ikaawT3TIrb0Nhf5z7eDnXpIrAARRZose8UIvOYo13rZTvNuZfn1lTmztf72ebW/P9O5I9XRtRLHDp43Ldtpnca/vkaawT/Rjz4ovvf5f6AchrdD1p6keSK4AEEQOFh5ptgu9/HjbNm9X373efZminjbvkVxlS3umX0fKEGvPfjW491y8wms+Cd1yh3hljzSFPfD+3Tv9yHdx8dkfaEZHTuMHHl9Q7p8MSa4AgLbKbKGRZjvy2biQyVVNafN+yVW2sWd6dOSrb9NCO47djh1ZPvPamF/GpXqkKewBZdZvDg40dOS/OD72Dzw6ctKnCz4pS3IFALSVg4VHmu3Iv/LTy1VanpJN+hIn196/7t/GnunakWKrQoNCZ1pux43P5918Ijktr+Q126+PiuiIym/dW/hzkQ4h/YSjoR/8lv0PIrkCALrxC08eabYjvW61PAm3e5v0JXpl7Xq2srSNPdOpo2WxVUlidZ5ellxFHbUswKV6pClE4YtJ8tABkz5xHWp15GhS6+iHNx2Bzq/p0wWSKwCgm/zC45Fmu1AA0obl69aktOxLr7V6+WwkPLWmV9z500VqdsVppGxLe6ZlR7IstqpTzZf1z3ekrfwL3/nNNdnyklmX2r5g1EKHir6mOhJ8jOnj8ic0h1r96yNNh5D+1crp0wWSKwCgG71slCPNLuHzKEotOeIo8fjVy4sT1KYv8a/13YteaNWgXnf1YrzwxKRW08rl+chd7pmWHempvebC0TiZOt+R+BEaIVW7RSvPx9mF8tNppCmEoP8vOgz8v0MHg//76NjwZzMH07SwCMkVANCNU0UeaXYJv8x46HVLQ69Yg59THFabvkSvwU5vuTs1uyyf+dfl6j0t73bP+FnSwhKKArmehaMRqec7Mj2OPqWhUKKhaKt1WsZWKZ8xTaF+OrDnz+Uv/JFGh5nWTAuLkFwBAN2U2UIjzS53eXmp1y1LU9PWsi9Lja1rTS/PWqfxIr2zPdOpo5YWdpQp1ruvZSss41K3UTBGpJC68EjQEdL1lwwkVwBAN2W20EizgcTrq6KOXGpFBWPHSK4AgG7KbKGRZgOJ11dFHbnUigrGjpFcAQDdlNlCI80GEq+vijpyqRUVjB0juQIAuimzhUaaDSReXxV15FIrKhg7RnIFAHRTZguNNBtIvL4q6silVlQwlpnN/n5//TeEfQsO3z0j3wMuUwb1bSjWvlVL2yq2+tH0UPo4fWI7SK4AEEQOFh5pNpB4fVXUkUutqGAspDzqiKnx4PCwzK/lDY8VRr2ORtebDGwbyRUAgsivNB5pNpB4fVXUkUutqGDM8y/0NRo59eTkR03eKf50lhKt11x9D9dRkFwBIAi/0uSRZgOJ11dFHbnUigpGw4vrP46l0Yit5qjqq1Q/ffrkNTX0sVeYDpIrAASRX2w80mwg8fqqqCOXWlHBKJ2e/pa/fAt/+6/Mqk/5EtUHh4dec/4vsU0ByRUAgvCLTR5pNpB4fVXUkUutqOB6ff/dt3/88d9pYQjlRavlJQElr/Pk8SPl2rzy/Nu2poDkCgBB5NcbjzQbSLy+KurIpVZUcL28kwfMr76M1WPF26302QeHh/n9W9u+RUBvJFcACMKvNwzGtkc64LAd5a7ePL/OZn/nMKqhxfSJOXkdDW2yYs1xkVwBIIjyhYfB2N5IBxy2o7G3NTbJr76A1ePJ40dpdpG8msbU7oRVIrkCQBDlC49Gmg0kXl8VdeRSVxRcrsDYxlB+/Tqbpd3dWnmpwOnpb2l2Tnkt7ATvhFUiuQJAEPmFxyPNBhKvr4o6cqkVFVyvclfn8cPLl1dXV2mNLu7cvpUfZMUtrso7Yc3fM2tSSK4AEER+4fFIs4HE66uijlxqRQXXq9zVGr0zq5UPteJeAflPD0zzTlglkisABJFfnzzSbCDx+qqoI5daUcH1yvt5w8wq5TUAGml2Tnkt7DTvhFUiuQJAEPm1xyPNBhKvr4o6cqkVFVwv7eHNM6u1TK7lFQVlcr24+DzBIEtyBYAg8muPR5oNJF5fFXXkUisquF6DZFabzf7OX7VvDg7S7L+9fvXKKzi/lhe5Pjg85K+/AgC2xS8/eaTZQOL1VVFHLrWigmHl+dT5W7Tm6wS0mk/Q5j9A4E/540khuQJAEH4FyiPNBhKvr4o6cqkVFQw7Pf0tf+Ead2n99OmT/0iB/vVVAY65Cq8+ETvNd2uRXAEgCL845ZFmA4nXV0UdudSKCkaW7xughOqLAWazv3Oi9dlWr1ne/FVjmrfHIrkCwBRdXV399eVLWminfMnRSLOBxOuroo5cakUFI1NOfXF8nL98Ps+qocza+NsEirD5s2dnH9LsxJBcAWBazs/Pf3j5Uq8cXf/eo19v8kizgcTrq6KOXGpFBaNBqVQ59eTkRw19sOx8quZXfHYKSK4AMBWKqvfv3c35oOtbjPOGHmm2tSn/pXLr15f59Tj/VrQNrXx29kG7ZXtvr+7akUpSMYOU1HWHuNSuBQODI7kCwMiUUN+8+fXg5o0yHHz/3bfp062Vm2uk2RaUhPzOjLQ8VV37ymazvx8cHmrb9oEv3yrIQ/tnG2eh/OBpYSW1MF9S79/n9tgh5VOnKWAMJFcAGI0yqy8MmB+aTyu11niENLuSf3uYr2xLs1PVu8ic+VoGNa3vSwC9f7ytZhT40hoD8SOnhZV8naLi5pPHjxw6PfqdKe+6QyQ/o0aaAsZAcgWAMf3xx3+XmSCPrhe5SuMR0uxKjmJKP+03GVG/IhXOfEZZo01Qu7j4rLRahlTlV2/eLyau4IdNC8u5hfKk79nZB/+8oX/TVGtdd4h5fY80BYyB5AoAIzs/P29cKqDR4+/oNB4hzbag+NJ1k1H0KFIBVCktN9gmqCkUzp9bddRThE3LA2nZ0Yvj4/lrFXKebp8+pccOMa/vkaaAMZBcAWB8/+t//a8yGfS4yFXKR9BIsy3kHJOWp6pHkcp8r6//JpC37RTySr4j5uCXurbsaOG5XmVQb97patfeO8Tre6QpYAwkVwAY2V9fvhzcvPH//f/8v/ONBXpc5Co5WHik2RaiJldFugeHh/7Y2/ZOrndu31LmSwvD6dpRQ9emNtkhXt8jTQFjILkCwJi+zmbff/etMqs+0GK/O7lamS000mwLIZPr5fU91fNZUm/bL7m+f/dOgW/+EoLNdeponrZtf53rhjvE63ukKWAMJFcAGJMyq5KrY6v9/vZt17+eZWW26BQvQibXJ48flZeletseydXvhfJv2AfXqaMGf9XaX3q74Q7x+h5pChgDyRUARvPDy5cHN2/0y6nzymzRKV7ES66KaApqaeGat+2UXN+/e+fLWz22cdrVj5wWOjo5+fFO6xt1bb5DvL5HmgLGQHIFgHG8efOrQsCfHz+m5Y2V2UIjzbYQLLleXHz+5uCg8dehvG2n5Cp6KGU+31hAoxH+NueHTQtdqDBt2PK9WYPsEK/vkaaAMZBcAWAEvo1rv+tZlymzhUaabSFYcn1weDgf6bxt1+Rqs3/+4pRG+z+X2oYfMy10oXraXycwyA7x+h5pChgDyRUAdu2vL1/08t/vBgIrlNlCI822ECm5Ks9pnSePHzWGt1WG08c9LlpVYPUj9Mu+y/gx00Jrqv/k5Me0sM5QO8Tre6QpYAwkVwDYqaurq4ObN54/e5qWh1Nmi07xIl5yXT2U1dLaXfi06+jJ1VffpoUWhtoh5fppChgDyRUAdufrbHb/3t18D6xhldmiU7yIlFwvLy/Vzjxvqxinj/OdoTp5cXysR+i37TJtOir1uD/XUDvE63ukKWAMJFcA2J2HR0cHN2/0+MuubZTZolO8yDkmLU/VJkV6W3Walrt78vjRndu30sJAOnW0LLYqm/bI0113iNf3SFPAGEiuALAjw94Da16ZLTrFi31Orpo5Pf1t7fuuFA0Xbr6h9h0ti63+s1hl/S07WrZDlvH6HmkKGAPJFQB2YRs3E2gos4VGmm1B6cebdPo19O517avkbeeD2jcHB5ovL/TUx5o5Ofkxhz9tpdWUHb04IFeVFpbTU3vNhaNxlep8Rwt5W5IrqkNyBYCt+/PjR73ev3nza1rejjJbaKTZlXx+zllH487tW21O142lfV/zvO18UPO9Wl8cH6fl63fue2UN7RkNfbZ9wuvEz5IWlsg/VywbjUg939FC3pbkiuqQXAFgu/768uXg5o3B74E1r8wWIePFNvqazf5WemucbFZ216Slqe3YWUebc6nbKBjohOQKAFv0dTZTbL1/725a3qYyW4SMF/H6qqgjl1pRwYiK5AoA27LVe2DNK7NFyHgRr6+KOnKpFRWMqEiuALAt276ZQEOZLULGi3h9VdSRS62oYERFcgWArfjl55/0Gn9+fp6Wt6/MFhppNpB4fVXUkUutqGBERXIFEJ/vebniPStaYdg31O/gHljzymyhkWYDiddXRR251IoKRlQkVwDxnV7/6faF7xP3Dd71WYXXNLWx8/NzPeAvP/+UlnfFqSKPNBtIvL4q6silVlQwoiK5AgjLgVX/KrN+c3CgmZOTHzWT/1Sm0qqG/x79UMl1Z/fAmudUkUeaDSReXxV15FIrKhhRkVwBhHV5eem/h6Tweuf2LSVU31U+ffofvvP8IMl1xzcTaMjBwiPNBhKvr4o6cqkVFYyoSK4Agru4+KzYqqGEmqb+bcDkqsx6cPPGKLFVymyhkWYDiddXRR251IoKRlQkVwBhObPqhfb09Lcnjx/5UoEHh4fp0/8YKrnu+B5Y85wq8kizgcTrq6KOXGpFBSMqkiuAsN6/e/fNwUHjOld90LiNwCDJ9fe3b/Ugf378mJbHkIMFg7HVkQ44YAwkVwDVKP+afEu+E5azqRb9OA2bJ1ffA0vhNS2PxKmCwdj2SAccMAaSK4Bq+CYAnYZvI6B/nzx+tOx+rhsm1xFvJtBQNq6RZgOJ11dFHbnUigpGVCRXAHVQ7vSrpvKrLwBYyBezemi1tPFKmyTXq6srxdaHR0dpeVS5cY80G0i8virqyKVWVDCiIrkCqIMvWlU2TcuL6LP5xVURNs2u0zu5jnsPrHm5d480G0i8virqyKVWVDCiIrkCqMOL4+PVsfXy8lLR1q+sq//Wa0Pv5Pr82dODmzeurq7S8tjcex5pNpB4fVXUkUutqGBERXIFUAHF0CePH6WFRbSC/4irxvzdA1brl1x/ePlSW414D6x5bj+PNBtIvL4q6silVlQwoiK5AqiAgunqMFpe3rr61Ow8J9f3796l5RZ8MwH9m5anIe8BjzQbSLy+KurIpVZUMKIiuQKo3unpb/k1teW7skxpWLHVJ2v1rz5On1jpz48ftf6bN7+m5cnIO8EjzQYSr6+KOnKpFRWMqEiuAOrW711ZvU3nHljz8n7wSLOBxOuroo5cakUFIyqSK4CK9X5XVj9fZ7Pvv/v2/r27aXlicrDwSLOBxOuroo5cakUFIyqSK4BabfKurB58Dywl14ncA2teDhYeaTaQeH1V1JFLrahgREVyBVCrTd6V1cMPL18e3LwxqZsJNOS94ZFmA4nXV0UdudSKCkZUJFcAVer9rqx+fvn5Jz3R+fl5Wp6kvEM80mwg8fqqqCOXWlHBiIrkCqA+O35X1jTvgTUv7xOPNLvO5eXl2dmH9+/e7eC89YY69bW5HeyZrh2pJBWzSUneXH1dXHxOU+241K4FA4MjuQKozI7flfXXly96ol9+/iktT5j3SR5pdiXfyzaPO7dvdQ00u+Qi00I76ih359Hy3me72TN+8LSwko7z+ZI6/fkMBVb9x9FPeo7jTx4/0mh/dXj51GkKGAPJFUBNGu/K2kFsPbh54/mzp2l52nKw8EizyykJKf2cnv6mkS8a1sy292pvLfvKlM+8STnaZLWd7Rk/clpY6cXxsdbUwa+4mf8LaKjHtMZKSqtauXGmVg/V/j9RfkaNNAWMgeQKoCblu7K2fXbQNxPQmOzNBBrynvFIs0to72lnlqlFKc0btgxDu9emr5KypnpRXMvaHDO73DMtO1Ll6qUsXknUv3nQv2lqJW2uvJsW/uE4q+7S8kou1SNNAWMguQKoRg4QGjtIVw+Pjg5u3qgltkreOR5pdgmllvmTbco32rBllNm9Nn1lOkKePH6UFrrY5Z5p2dGL4+P5zJ3/OyjXpqklLi8vtdp8ctWGmldMT8sr+bk80hQwBpIrgDr4VdZj9WutXqdb/gJ0henfA2te3j8eabYLRT1t2ObE5Cg69aWsqWy3+ZFgW9ozLTta+HOaWvPmitppagknV41G/XpYTbaM434EjzQFjIHkCqACeun170Y15k8dNShkbJhXfn/7Vk80/ZsJNHj/5JFmu1Dae3F8nBamp31fzmQeOh42P0O/pT3TvqOFvPnac67ic8b6v1P+19CkRsv/LH4ujzQFjIHkCmDq9Mqa35Ky9g0lehXfMGH4HlgKr2m5Ht5FeaTZ1hTvGslmatr35aBWjk1+ntnennFtaaE7bdvyOtf8Kwut7zOvJyc/ai+1P4vszT3SFDAGkiuAqdNLbH7JXP1Cq8/qhXmTE2y+mcAPL1+m5arkveSRZtvxO35a3jFqLJ36UtBUXFNH6ssb9kufW90znTpqcBhtf+lt4zy0fsDrtDfythppChgDyRXApOW3oWisjqT6rDNKm9seLfR1NlNsfXh0lJZrk3eUR5pdR/vNF3F6TPm0a6e+MrWTf/jpdD5+B3vGj5wWOvJJ004lOYX7SbtmcW/lkaaAMZBcAUyXXmjzi6Vyw6dFFG39Ep5XSxt3VN09sOblfeWRZlu4uPis3Zj3oeJa+sTEdO2rlMNrpx9str1n/LBpoQsVpg3XvjerQWlV/0FyO51Ou3oTjzQFjIHkCmC68vmh9qP9L08bnj97Wt3NBBoauyLNtqYQo1jjbXuft96qfn1lTmw9jpDt7ZneHamero0ou2sr9VK20z6Le32PNAWMgeQKAP/7Hlh6Pa46tkqZLTTSbBeKZd7209b+Uv8mevdlinravN/PNlvaM/06ev3qlWJoWmjHvefiFV7zSeiWO8Qre6QpYAwkVwD7zjcTqO4eWPPKbKGRZjvy2biQyVVNafN+yVW2sWd6dOSrb9NCO47dd27fSsvX8pnXxvwyLtUjTQFjILkC2Gvn5+d6JX7z5te0XLMyW2ik2Y5eXP99/NX3cBjLJn2Jk2vvX/dvY8907Uix1b/xT8vtuPH5vJtPJKfllbxm+/WBLSG5AthfVd8Da16ZLXrHC+Wblifhdm+TvuT1q1ebvMVqG3umU0fLYqsC6Oo8vSy5iq/9TQsruVSPNAWMgeQKYE99nc2+/+7bqm8m0FBmi37xwu9YH/YX4gNq2Zey3dnZh0bCU2tKafMnXNXs6elva0/EbmnPtOxIlsVWdar5sv75jrTVNwcHGvOba7LlJbMutX3BwJaQXAHsKWVWJdcwsVXKbLE2Xjy5vlOpUkuOOEo8yjFKSF6coDZ9iX+t716U1dSgkpxi68ITk1pNK5fnI3e5Z1p2pKf2mgtH42TqfEfiR2iEVO0WrTwfZxfKT6eRpoAxkFwB7KMfXr6s/R5Y88pssTZevH71Kq+p+KKhwDf4OcVhtelLlFCd3nJ3anZZPvOvy9V7Wt7tnvGzpIUlyrsaLxyNSD3fkelx9CkNBVYNRVut0zK2SvmMaQoYA8kVwN558+ZXvfr++fFjWo6izBYaaXa5y8tLBTJLU9PWsi9Lja1rTdFN6zQC3M72TKeOWlrYUaZY777aZ1ZzqdsoGOiE5Apgv4S5B9a8MltopNlA4vVVUUcutaKCERXJFcAe+evLF73uhrmZQEOZLTTSbCDx+qqoI5daUcGIiuQKYF9cXV0d3Lzx/NnTtBxOmS1Cxot4fVXUkUutqGBERXIFsBe+zmb3792NdA+seWW2CBkv4vVVUUcutaKCERXJFcBeeHh0dHDzxtXVVVqOqMwWIeNFvL4q6silVlQwoiK5Aogv5D2w5pXZImS8iNdXRR251IoKRlQkVwDB/f72rV5rQ95MoKHMFhppNpB4fVXUkUutqGBERXIFENmfHz/qhVbhNS2HVmYLjTQbSLy+KurIpVZUMKIiuQII668vXw5u3oh6D6x5ZbYIGS/i9VVRRy61ooIRFckVQExfZzPF1vv37qblPVBmCwZjeyMdcMAYSK4AAtqHe2DNa8QLBmNLIx1wwBhIrgACev7s6T7cTKChES8YjC2NdMABYyC5Aojml59/0ovr+fl5Wt4bZbZgMLY30gEHjIHkCiCUP/74b72y7sM9sABgD5FcAcRxfn6u2PrLzz+lZQBALCRXAEHs2z2wAGAPkVwBRLCfNxMAgH1DcgUQgTLrwc0bxFYAiI3kCqB6P7x8uYf3wAKAPURyBVC3N29+/a///I8/P35MywCAuEiuACrGPbAAYK+QXAHUipsJAMC+IbkCqNLV1ZVi68Ojo7QMANgDJFcA9eEeWACwn0iuAOrz8Ojo4OaNq6urtAwA2A8kVwCV4R5YALC3SK4AasLNBABgn5FcAVTjz48fFVvfvPk1LQMA9gzJFUAduAcWAIDkCqACX2ez77/79v69u2kZALCXSK4Aps73wFJy5R5YALDnSK4Apo6bCQAAjOQKYNJ++fmn//rP/zg/P0/LAIA9RnIFMF3cAwsAUCK5Apiov758UWz95eef0jIAYO+RXAFMke+B9fzZ07QMAADJFcAE+WYCGtxMAABQIrkCmBxl1oObN4itAIAGkiuAaeEeWACAZUiuACbk97dv/+s//+PPjx/TMgAABZIrgKnwPbAUXtMyAAD/RnIFMAm+mcAPL1+mZQAA5pBcAYzv62ym2Prw6Cgto5f/+s//YDB2MNIBB4yB5ApgZNwDayiNeMFgbGmkAw4YA8kVwMieP3vKzQQG0YgXDMaWRjrggDGQXAGM6YeXL/VCSGwdRJktGIztjXTAAWMguQIYjW8moH/TMjZTZguNNBtIvL4q6silVlQwoiK5AhjH+fm5XgLfvPk1LWNjZbbQSLOBxOuroo5cakUFIyqSK4ARcA+sbSizRch4Ea+vijpyqRUVjKhIrgB27ets9v1333IzgcGV2SJkvIjXV0UdudSKCkZUJFcAO+V7YCm5ElsHV2aLkPEiXl8VdeRSKyoYUZFcAezUDy9fcg+sLSmzRch4Ea+vijpyqRUVjKhIrgB2582bX/Wyd35+npYxqDJbaKTZQOL1VVFHLrWighEVyRXAjnAPrG0rs4VGmg0kXl8VdeRSKyoYUZFcAezCX1++6AWPmwlsVZktNNJsIPH6qqgjl1pRwYiK5Apg63wPrOfPnqZlbEeZLULGi3h9VdSRS62oYERFcgWwXb6ZAPfA2oEyW4SMF/H6qqgjl1pRwYiK5Apgux4eHR3cvHF1dZWWsTVltugRLy4vL8/OPpye/qbx6dOn2ezv9Ik5+pTWuXP7llZLUzvRr68pq6gjl1pRwYiK5Apgi7gH1i6V2aJTvFAAffL40TcHBycnPzq5Pjg81CNoUXE2rfSP169eaU0/xQSTq0pShUrVXtlD7aiptMb1OlrMXaj38rO75ALSwnLv371TkV7ZY2HNmsmNqzvth/kvX2/5qTXSFDAGkiuAbfn97Vu9yHEzgZ0ps4VGml1H8VQr69/GSVbFO6UfjbOzD2nqHxcXn/0UE0yupl7cl8fCAKdgp08pFKblMbi8tLCOC169ib4i+qyS+opT5v3kp17x7MAO1JRcy/82DMb2RjrgsJk/P37UzlR4TcvYvvIw1kizKznevTg+Tsv/lhPqfHj1/GSTq+XzlPOnJxXsFMrHja3Su6Nle14dqa8BT7Vmfl6PNAWMgeTKYDRHOuCwAd9MgHtg7VjXI1l5zmuuCDpeZz4MecOJJ1fH04X1KwIqtaeF8XTtSF14kweHh2mqoH7v3L61pTju5/VIU8AYSK4MRnOkAw59fZ3NFFvv37ublrErnY7knIFWB7hlq3ly4slV/NtzDUXVNHX9a/dt/D69hx4d5Z835k8kq6+yzWH5ST3SFDAGkiuD0RzpgEMv3ANrRJ2O5ByA1p6i87u1NMqo5xkn14uLz3o0DX3gz5a0jj97dvZBjzB/4UF7ftK00Fq+PFQ1aFEFbOn36T3068hfkUYX2vlb7cul9isYGBDJlcFojnTAoZfnz55yM4GxdDqS8xWTC+Nm6cXxsdcsQ6dnlErLtw1pNE7NalFPpNVEH2uFTU4K+inSQmv+Hbo2VLBzbN0kPQ+rX0f5+uNyZyrOOppviZ/RI00BY6g4uabZQOL1VVFHLrWigqfpl59/0g4kto6lPIw10uwSLVcT5SGvWQYjzyg5aWheI9+PSVnW67x/906L5ZnaDX+d7cdPC10oN3tbja3Gu656d9T4oujfhVe+DshP55GmgDGQXCckXl8VdeRSKyp4gv7447+197gH1ojKw1gjzS7RcjVphCTzTA6pooSaryvw76x9krVMrvp4lOQqjWsGJqJ3R+WJZOVy/bv23PmGXGrvgoGhkFwnJF5fFXXkUisqeGrOz8+16375+ae0jDGUh7FGml2i5WqyIrkqM6Xla/ntXF7TyfXF8XEZXhubdOIHTwsd5S62ejFoV5t0tOMTyfm5NNIUMAaS64TE66uijlxqRQVPCvfAmojyMF57JLdcTdonV/FpV695dvbBqyksaqbMr/340dJCFz4rmRvZ5LzvsHp3ZP7ZQGPzfbuWn8gjTQFjILlOSLy+KurIpVZU8HR8nc2+/+5bbiYwBeVhvPZIVnrzamtPguZ4VK65bFs/bP7TBr7U1cPZ0fP9+HHSQmtKdXpq30JhatcM9Osoy1k8LW+Tn2hnTwcsQ3KdkHh9VdSRS62o4OlQZlVyJbZOQXkYrz2Sc+hZm+EcRhX+0vI1b7ssuZaPeXl5mbOvxiZvJPIjpIXW9Iz5etzy8tApXDPQr6OM5Io9RHKdkHh9VdSRS62o4In44eVL7oE1HeVhvPZIztekrv7VuaKeV2sEXE8uS64+wVn+Cvvi4rM/lT/bgzdPC+0oszaysmr246xufDd6dFQiuWIPkVwnJF5fFXXkUisqeArevPlVu+vPjx/TMsZWHsYaaXa5nHtWvC3d69y5fatxJaU3nE+u3xwcaHhlbdvYyuG1vCNBJ37StNCCInIupjSdawa6dtRAcsUeIrlOSLy+KurIpVZU8Oi4B9YElYexRppdyVFy2W/wlWidROejrZ+ikVx9VWuOg/qgEQ39nq3eedFPmhbWUc3zFZqyrJryo61I7TvQqaN5JFfsIZLrhMTrq6KOXGpFBY+LmwlMU3kYtzySleH8J7Ia964S/7mphbFV/BTlVo65J8Xf0FKuamz++tUrzfS+wLR9X35qjbQ8J1+60Khwx9p3tJC/dho7+KtgfiKPNAWMYV+Sq75R6j+2vpdp6Efw+V8emea1wp3btxb+mL5tPfqauIo6cqkVFTyiq6srxdaHR0dpGZNRHsadjmR9e/TdrJTn9D1Q6VPfBhXp9PGy75b5fVdaTVtpeP306Wta1KTW0Zr5YTeJiW36ev/und+D5aHCGt/PtZivFvBQkYqAo7xhywWkhS68P8sWNNP7AuI28nNppClgDPGTq75J+Vuqv3Vq+Bu0Fhvfp3wywA8+zeTqb7jlN2UNtaOm0hrX62gxN+LXofS5nXMNaWERfZ9VhV7NY2HBmsldqzXthMFfY3IBGmkKi3ydze7fu8s9sKapPIx7HMn6b+VvIPqP2fJ7oHKt1rQ0VXDqXb1OJ/36mrKKOnKpFRWMqIInV/9Iqn8bpw30DVQBSKPxG5aL6+uiNDb/DttDy77US/mj9sIM5zMKW/35uw1XmBaWK89/pKk5+oros4rpjS/lUHIBK2qAPDw6Orh54+rqKi1jSsrDOOSRHK+vijpyqRUVjKgiJ1fHuxf/3BC7IYfURnj15JSTq+VTlfNnKJXtFMpHj63SvqPczrI9r3bU1PZ+nedn90hTmMM9sCauPIxDHsnx+qqoI5daUcGIKmxyVZ7zaiuyjtdp5CFvNf3k6ng6X78oBSq1p4VRte9ILXjlhe9xVrN3bt/aahb3s3ukKfwbNxOYvvIw1kizgcTrq6KOXGpFBSOqmMk1x6DVAW7hap6ZfnIV/wJdQ1E1TV3/5n17v1LvqlNH+YeN+bPIaqrscRv81B5pCoU/P37Unnnz5te0jEkqD2ONNBtIvL4q6silVlQwooqZXHMGWnuWzu/W0shRz4tOrhcXn/VQGsveDKvVvMLZ2Qc9QuPCg6781GmhnXyFqGrQogrY6q/Uu+rakb8cjRa083fQlEvtWvCe4B5YtSgP45BHcry+KurIpVZUMKKKmVzzRZPLEmc2fzM8LyqSlm8b0pg/fasZPZHWFH2sdTY8L+gnSgvt+Nfo2krZzrF1w/Q8rK4d5YuPyz2pOOtcvlV+Xo80hWtfZzPF1vv37qZlTFh5GIc8kuP1VVFHLrWighFVzOTaZh1TJPKaORt5UclJQ5Ma+X5MyrJeR95f/6mY8pfym/9G28+SFlpTbvaGGjtIeJ306KjxFdG/C698HZyf1CNNgXtg1aY8jEMeyfH6qqgjl1pRwYiK5Lo4uZYhVfE0X1SQf2ftk6xlctXHoyRXaVwzMB09OirPIiuU69+1J84H4VJ7FBwbNxOoS3kYhzyS4/VVUUcutaKCERXJdXFyVWbyouX3cuXVnFzLv3woja268lOkhS5yFzu4HrSTfh2NchY5P6NGmtp7v/z8k/bG+fl5WsbklYexRpoNJF5fFXXkUisqGFGRXFslV/Fp17za2dkHr6mwqMkyv/bmB0wLrfnEZG5kw/O+w+rXkfgHA41BdmwbfjqPNLXfuAdWjcrDWCPNBhKvr4o6cqkVFYyogr9Da+1J0JyQ8prLNvRjln/XwJe6ejg7pk/05YdKC+0o2OmpfQuFCV4z0KMjy0E8LW+fn27HTzpZf335ov3wy88/pWVUojyMNdJsIPH6qqgjl1pRwYgqZnLNuWdthnMeVfhLy/88y7Lk2njAy8vLnH01NnwvkR8kLbSjZ8yX5JZXiE7kmoEeHRnJdUS+B9bzZ0/TMupRHsYhj+R4fVXUkUutqGBEFTO55stSV//qXFHPq5V51DPLkmu+QWz5W+yLi8/+bLlCD36EtNCCMmsjK6tsP8jqxnema0cZyXUs3EygauVhHPJIjtdXRR251IoKRlQxk6vk6LPinele587tW2UM9VbzyfWbgwONvKa2LbcSh9fypgRd+anTwjqKyGU92aSuGejUUYnkOhZl1oObN4itlSoP45BHcry+KurIpVZUMKIKm1zFUXLZb/CVaB1GG9HWD95Irr6ktcyC+rgRDf2erU3yop86LaykmueLNGVZNeWHWpHad6N9Rw0k11FwD6zalYdxyCM5Xl8VdeRSKyoYUUVOrspw/hNZjXtXif/c1HxsFT94uYkz7sm//4aWolVj89evXmlmkwtMW/blp9ZIy3PypQuNCnevZUfz/IXT2NmfBPPTeaSpPfP727fq/c+PH9MyKlQexhppNpB4fVXUkUutqGBEFTm5mqKPb2ilPKfMpwB65/YtRTp9PP+rdslvutI62kTDK6dP/8PxUatp5fywG8bEtX29f/fO78HyUG2N065azFcLeKhIpcCx3rDlGtJCO96ZZf2a2eTq4ZbyM2qkqX3ie2ApvKZl1Kk8jDXSbCDx+qqoI5daUcGIKn5yNUU3pTpnoIW/ZG9QqNVqlqb+zal37Wqd9Ohr4irqyKVWVPCAfDOBH16+TMuoVnkYhzyS4/VVUUcutaKCEdW+JNcqxOuroo5cakUFD+Xq6kqx9eHRUVpGzcrDOOSRHK+vijpyqRUVjKhIrhMSr6+KOnKpFRU8CO6BFUx5GIc8kuP1VVFHLrWighEVyXVC4vVVUUcutaKCB/H82dODmzeurq7SMipXHsYhj+R4fVXUkUutqGBERXKdkHh9VdSRS62o4M398PKlmuUeWJGUh7FGmg0kXl8VdeRSKyoYUZFcJyReXxV15FIrKnhDvpmA/k3LCKE8jDXSbCDx+qqoI5daUcGIiuQ6IfH6qqgjl1pRwZv48+NHtfnmza9pGVGUh7FGmg0kXl8VdeRSKyoYUZFcJyReXxV15FIrKrg37oEVWHkYhzyS4/VVUUcutaKCERXJdULi9VVRRy61ooL7+Tqbff/dt/fv3U3LiKU8jEMeyfH6qqgjl1pRwYiK5Doh8fqqqCOXWlHBPfgeWEqu3AMrqvIwDnkkx+uroo5cakUFIyqS64TE66uijlxqRQX38MPLlwc3b3AzgcDKwzjkkRyvr4o6cqkVFYyoSK4TEq+vijpyqRUV3NWbN7+qtfPz87SMiMrDWCPNBhKvr4o6cqkVFYyoSK4TEq+vijpyqRUV3An3wNoT5WGskWYDiddXRR251IoKRlQk1wmJ11dFHbnUigpu768vX9QUNxPYB+VhrJFmA4nXV0UdudSKCkZUJNcJiddXRR251IoKbsn3wHr+7GlaRmjlYRzsSLZ4fVXUkUutqGBERXKdkHh9VdSRS62o4DZ8MwENbiawJ8rDONKRnMXrq6KOXGpFBSMqkuuExOuroo5cakUFt/Hw6Ojg5g1i6/4oD+NIR3IWr6+KOnKpFRWMqEiuExKvr4o6cqkVFbwW98DaQ+VhHOZILsXrq6KOXGpFBSMqkuuExOuroo5cakUFr/b727dqhJsJ7JvyMNZIs4HE66uijlxqRQUjKpLrhMTrq6KOXGpFBa/ge2ApvKZl7I3yMNZIs4HE66uijlxqRQUjKpLrhMTrq6KOXGpFBS/jmwlwD6z9VB7GtR/JC8Xrq6KOXGpFBSMqkuuExOuroo5cakUFL/R1NlNsfXh0lJaxZ8rDuOojeZl4fVXUkUutqGBERXKdkHh9VdSRS62o4HncAwvlYcxgbG+kAw4YA8l1QuL1VVFHLrWiguc9f/aUmwnsufIwZjC2N9IBB4yB5Doh8fqqqCOXWlHBDb/8/JMqJ7buufIw1kizgcTrq6KOXGpFBSMqkuuExOuroo5cakUFl3wzAe6BhfIw1kizgcTrq6KOXGpFBSMqkuuExOuroo5cakUFZ+fn56r5l59/SsvYY+VhrJFmA4nXV0UdudSKCkZUJNcJiddXRR251IoKNu6BhVJ5GNd1JLcUr6+KOnKpFRWMqEiuExKvr4o6cqkVFSxfZ7Pvv/uWmwkgKw/jio7k9uL1VVFHLrWighEVyXVC4vVVUUcutaKCRZlVyZXYiqw8jCs6ktuL11dFHbnUigpGVCTXCYnXV0UdudSKCv7h5UvugYWG8jCu5UjuJF5fFXXkUisqGFGRXCckXl8VdeRSayn4zZtfVeefHz+mZeBaeRhrpNlA4vVVUUcutaKCERXJdULi9VVRRy61ioK5BxaWKQ9jjTQbSLy+KurIpVZUMKIiuU5IvL4q6silTr/gv758UYXcTAALlYexRpoNJF5fFXXkUisqGFGRXCckXl8VdeRSJ17w1dXVwc0bz589TcvAv5WH8ZSP5N7i9VVRRy61ooIRFcl1QuL1VVFHLnXKBX+dze7fu8s9sLBCeRhP9kjeRLy+KurIpVZUMKIiuU5IvL4q6silTrngh0dHBzdvXF1dpWVgTnkYtz+SLy8vP3369P7dO/2bpqaqU18yVGt6hPTR0Lp2lG1SUr9tXWrvgoGhkFwnJF5fFXXkUidbMPfAQhvlYdzmSJ7N/n796lW5yZ3bt87OPqRPT4+LTAsrDdWaQp42bPmkPbi2tNDOJiVtsq1L9UhTwBhIrhMSr6+KOnKp0yyYmwlsTpHlweGh0kxaLnz69EkRR2P6ZxzXKg9jjTS73IvjY62mPfPk8SP9mzfc5HzeVrm8tLDS5q2dnv52cvLjNwcH3jDNDq3Tg29S0ubteMPemwNDIblOSLy+KurIpU6w4D8/flRJb978mpbRi162tRvns6ley/PXXUOL6RN1KnvRSLNLaG/cuX3r4uJzWr7O9042+jdNTUybvmSQ1vxzjpJuyyftp9ODb1LS5u14w96bA0OpOLkyGFsa6YCbgL++fDm4eYN7YPXmwKp/FWUcWRxVnWlev3r14vhYmUaf1TpONpq83rRKPoDzSLNLqPcy25n3mMZ8yp+CNn3JgK1p5ZZP2k+PB9+kpE229Ya9NweGQnJlMJojHXBj+zqbKbbev3c3LaO7y8vLJ48f6Wuq1HLn9i0FGsVT/evP6lP+wBRhtaZWS8sVysewR5pdYuHvzWezv72t9kaampI2fcmArZFcM2/Ye3NgKFwtMCHx+qqoI5c6nYK5B9aALi4+K49qlOdTlWPmT8v5tGtaqFB5GPduxNsq4qTlKdmkL+nRGsk184a9NweGQnKdkHh9VdSRS51OwdxMYBDOrPqanp7+9uTxI18q8ODwMH16jgNuWqhQPoY90mxH2rD9xaA7tklf0qM1kmvmDXtvDgyF5Doh8fqqqCOXOpGCf/n5J5Vxfn6eltHX+3fvlFQUW/WC7cjit1dfXl56hZImtdu1clquUD6GPdJsF042k90JvfuSfq1tEvXa6PHgm5S0ybbesPfmwFBIrhMSr6+KOnKpUyiYe2Ct4BvLd+K3VL++vrWnFv04CynTrDgdW4V8DHuk2S6U7O/cvuWdNkG9+5J+remY2eRJ1+rx4JuUtMm23rD35sBQSK4TEq+vijpyqaMXfH5+rgJ++fmntIx/e3F9k85Owxez6t8njx+tSC361DcHB6uj7fQ1ek+zrWkvaatpvjfL+vUlvVsjuWbesPfmwFBIrhMSr6+KOnKp4xbMPbBWU7j0F0j51RcALOSLWT3a/2pYW032V+Tt5cY90mxrDw4PJ74T+vUlvVvTEdX7Sdvo8eCblLTJtt6w9+bAUEiuExKvr4o6cqkjFszNBNbyRat66U3Li+QXZg2F0TS7jjJNgNgquXePNNvO61ev2u+xsfToSzZpjeSaecPemwNDIblOSLy+KurIpY5YsDLrwc0bxNYVXhwfr46tl5eXirb+Ij5Y8rde5ymzTj+xtZSPYY8024J+Kmjc3XaauvYlG7ZGcs28Ye/NgaGQXCckXl8VdeRSxyqYe2CtpRi6On9oBaVVfwWX3T1g3nxs1ePUe/41H8MeaXYdZbv2QX9cnfqSzVsjuWbesPfmwFBIrhMSr6+KOnKpoxT85s2vetI/P35My1hE4WN1GFUAzV9BvTyn2ZWUUJVxX796lYfC8Z3bt/YquS7LdtrbfnPbpLTvSwZpjeSaecPemwNDIblOSLy+KurIpe6+YO6BNQhlzfzla5k7FWvyJo3R8nztBDUaSbPLLct2Z2cfND/B/dCyL2nfmsKcjpllzdaYXFd0RHJFACTXCYnXV0UdudQdF8zNBAaRX4w1wlyx2k/eDx5pdokV2V1jmpe9ura0sFyn1nxt9LJ+lXS91XwIHoQfPC20s7akFR1t0o439EhTwBj2Irnqu1j6aNq69pVdXHxecc5gntbU9y/tFr3kp6nt6NSRqlI9m1fVdW+YS+1U8Iaurq4UWx8eHaVl9KIvdI93ZUWVj2GPNLtITjDLxjS/bbq2tLBE19buXP994BfHx2n5H/pGpO8k+ejyZSRdv7Gs5QdPC+u0LGlhR5u34w090hQwhuDJVd+h/H84LU9b+75KeqnWC7Y2bBn4Xl//MaE8tH+2dzWbnyItLKcW5qvSy0/6dBdd90ZWPnua2ibugTWI/OXW0Evy4KmiOvkY9kizgWyjLx1F+nahf9PyblXUkUvdRsFAJ2GTq36aPLn+A+VtVp6IfqXmzNcmq2ll/6jt/eMNNbOl79p+/LSwnP8wkiLIk8ePchDR6HHWp9PeKOUn1UhT2/T82dODmzeurq7SMnrp8a6s2PLe8EizgcTrq6KOXGpFBSOqsMnVUUzRp83KE9GjVL1a+6SyxtpX7ouLz3qlL0Oq8qu33dJvBv3gaWEJt1Ce9z07++AfOfRvmmqn095o8FYeaWprfnj5Us/CPbA2lI9eDX2cZvdb3iEeaTaQeH1V1JFLrahgRBX8agHFl/Yrj65rqcqgCmq5x7VZTYlw/tyqo96WXvjbdPTi+Hj+coUcStoH0K57o8FbeaSp7eBmAoPIX2iNPX9XVinvE480G0i8virqyKVWVDCiIrlOSNdSlflev3qlD7xh16xmTx4/0rZbutS1TUcLT/cqhnrb9le7brg3vJVHmtqCPz9+1OO/efNrWkYvvCtrGe+TPNJsIPH6qqgjl1pRwYiK5DohnUpVpNNrtj/2hv2S653btxpvQR1Qp44aOjW1+d7wVh5pamjcA2sQyqn5YmjlV2JrKR/DHmk2kHh9VdSRS62oYERFcp2Q9qX6nFM+UeoNeyTX9xv/acTV2nc0Txu2vM51kL3hrTzS1KC+zmbff/ft/Xt30zL6Kt+VtaXfFdQr7xmPNBtIvL4q6silVlQwoiK5Tkj7Up88flRemeoNu2Y1vxHKv2HfkvYdNfgL1/Lq20H2hrfySFPD8T2wlFy5B9aG8gXQGlt6W2HV8s7xSLOBxOuroo5cakUFIyqS64S0LFUv3o0/juIN22c1veT78laP7Z129eOnhS5OTn680+5eXZvvDfNWHmlqOD+8fHlw8wY3E9hQ/u+ssfpdWZeXl/t5FUHePx5pNpB4fVXUkUutqGBERXKdkDalXlx8/mbujuvesFNW0+Mo8/nGAhqN8DcUP3haaE21aas2780aam+It/JIUwP55eef9Jjn5+dpGb34mhB/gfI1zcvoeCa5aqTZQOL1VVFHLrWighEVyXVC2pSq1+z5SOcNu2Y10at7frNLI/8Nwo+cFlpTSeVv/1cYcG94K480NQTugTWI8kBVfl2dSvWl396bDifOuyiPNBtIvL4q6silVlQwoiK5TsjaUn2R35PHjxrDG+qlXR93vW5VgdWb9wi+a/mR00I7qr/l7TmH3RveyiNNbeyvL1/0aL/8/FNaRl/t35Xl0/B7ewls3ksMxlZHOuCwT/TddcWr82z299nZhza/LN0cyXVC1pbqrLZ6KK6ltVvz2awpJFdfgJsW1hl2b5RbpanN+B5Yz589Tcvoq/xCr46k+qyvKNjGLxCqkHcUg7HVkQ447JPX139cPS38mz/lcef2rW2fOyC5TsjaUvV6rI7meUO9wOvj1WekFnpxfKzNe2y41tqOSjrWlaHbX5447N7wVh5pagO+mYAGNxPYkH6Cz18XHR7+Ejfoa+239OXV0sb7J+8rjzQbSLy+KurIpVZUMAahl2Z9d9WLqT/QjL7flmeF9B1Y8/pXKzhOaGz15CvJdUJ6l+oN1Wxa7kiHoA/HwbXvaFlsVTztGqn77Q1v5ZGmNvDw6Ojg5g1i6+byu7LaD30DTRvvn8auSLOBxOuroo5cakUFYxB6Cdb3YQ29qiqY+tqt8gSBIkT52u0V2v/CsweS64T0LtUbNrKaFvUSvvbXpjoo57cdSsuOlsVW/dCm+dxCy44W7o21vJVHmuqLe2BhLOVhvPmRPEHx+qqoI5daUcFoQ6+8+QTBiripl9Q7t2/53Gr5KqyPG6dXNaOH2tLpMAueXPOvGtv/DnpE7ftq8IaNrOZjsTwQ9bFm9PNQmQW1moKjFwfnwtLCEnp2r7ZwlPXPd7SQNxwruf7+9q0egZsJYBTlYayRZgOJ11dFHbnUigpGG0qi5Vd2/qVT8cnhQWu+OD5+cHjo/Jo+vYhWXvtKvYmwyVV7X3s2/yQx/4PCBLXpayFv2Djg1LImy9sDlddQa89o6LNdE14nfq60sEh5FePCUabq+Y4W8oajJFffA0vhNS0Du1UexhppNpB4fVXUkUutqGCs5fOjPoGlSKqP58+VOtrqX/8WVEFW/2qT9Ok5/kXu6mi7oeDnXOsybF86vJTeGiebdZhq0tLUNu2go6G41E0K9s0Efnj5Mi0D7Tx/9nSoP1RRHsa9j+Qpi9dXRR251IoKrpdeR66urtLCNr04PlYG9ZtJ9NqqRX1xl4XOFfcWKGk1Rdu0sB0k1wmJ11dFHbnU3gV/nc0UWx8eHaVloDUfdTp4Ns+v+Rj2SLOBxOuroo5cakUF18s7edv59dOnTz6HmpavKbYqyy48Q+TzsmlhCW145/pGBGl5O0iuExKvr4o6cqn9CuYeWNhEeextmF/Lh9JIs4HE66uijlxqRQXXq9zVg/xMu5BC6sKEqkTb+90vL46Pt3qdgJFcJyReXxV15FL7Ffz82VNuJoDeymPPo/drVeNx0mwg8fqqqCOXWlHB9Sp3tcf28uuAlFl3EFuF5Doh8fqqqCOX2qPg//P//P+V2zIYQw29VnX9cajxCGk2kHh9VdSRS11RcLkCYxtD3xN2c/1rD8qsJ+3+cvvmSK4TEq+vijpyqT0K/vPjR22if9My0FF57OVxcPPGmze/dr3+pPEgaTaQeH1V1JFLrajgepW7Oo/vv/t2svdbnI+ts9nf2zv/SnKdkHh9VdSRS+1X8PNnT/U9hYtc0U957Gn0y6zWeKg0G0i8virqyKVWVHC9yl2tMeXMKkqo3xwcvH71Ko8Xx8d3bt/a3i2MSK4TEq+vijpyqf0KVshQ2vjl55/SMtBFPvA2yayWH8ojza5zef1XcN6/e7ebm+VtolNfm9vBnunake9s2Lskb6umerz726V2LRg95P28pcw6m/2tw+DJ40dKnHoW/ausqUMrffofOk6USjW0cpqao0/lassxf1/YAZFcJyReXxV15FJ7F+xrBqZ/BT0mSEfO5pnV8jHskWZXel38gRKNHdzRZhMuMi20o45ydx5qOX1upd3sGT94WlhJaWO+JGWL9Ol1lDAUUE5OfnQWV2rRmA8rK5RPnaawHdrD2zvPqgPAgVXjweFhmV/LI1zHhtfRWJFcR0FynZB4fVXUkUvdpGCuGUA/v799O9RhUx7GbY5kJSGlH59WUabxVppZeK+cKWjZV7bwhFCbuLazPeNHTgsr+S7xjhr61xtqtEkVCitas3Ga1pGlfUf5GTXSFLZje9cG5B9+GjnVB7mO8LT8z5+L11h7D9fdI7lOSLy+KurIpW5SMNcMYHTlYbz2SNbrll6uyuCilOYNp3aKJWvTV0mvxOpFiS1rc950l3umZUeqXL2UxeczZ/o3TS2nbefzh+OsWkvL67hUjzSFqviHH41GbDVHVR0V+ljHm9fU0MdeYToqTq4MxpZGOuC60w/K2pxrBjCW8jDWSLNL6CVq/nybIo42bJ9mdqxNX5lSpl6M00IXu9wzLTtS5piPGjlPr84W/rXvfHJ1OlFGT8vr+Lk80hTqkY8WjYU/gPknmdfX19Lkk/o68PzZSSG5MhjNkQ64Xh4eHXHNAMay+ZHs8y5tTkyOolNfypp6tW7/2/DVtrRnWna0MGqoNW/u82TL5AsWG8XrMTXZPov7QTzSFCpRXrSq/xdp9t+8jo5zHxgebS6t2T2uFpiQeH1V1JFL3bzgq6srrhnAWMrDuN+RrFe1aZ5lsfZ9la++fjFOn+hrS3umfUcLefO1v8/1CeMH//4j9ZrUaJ/s/VweaQqVyNdqa6z4v6DP6iDxVSgaPv86QSTXCYnXV0UdudRBCv797Vs9CNcMYPfKw1gjzbaml7RGuJma9n05q5VD+bV3a9vbM64tLXSnbdtc55ovW8wXOCrKaBd1OoXsR/BIU6iBjtscRjVWHMZ5HQ1tMtlvBSTXCYnXV0UdudShCn54dHT/3t20AOxKeRh3PZLPrt/xM9mzLNapL73uKrGpo/yy3S99bnXPdOqowXm05a/7GyehXxwfd90VeXONNIUa+AJWD33p0+wieTWNzX9NsT0k1wmJ11dFHbnUoQr2NQNv3vyaloGdKA/j9keyXqL0epa3mvJp1059ZWon/7a002/8d7Bn/MhpoSOfN21fkiO4n7FHEPeGHmkKNSgvFVjxc055LawO9TQ7SSTXCYnXV0UdudQBC/Y1A399+ZKWge0rD2ONNNvCxcVnvaTl37CvPjEzoq59lfLrd6c3nWx7z/hh00IXKkwbrn5vVoPSqhJJ7qXraVdv5ZGmUIP8FddYcUl0vqREo9NlJLtHcp2QeH1V1JFLHbZgrhnAjpWHcY8jWTlGycbbTvM9xf36yvwS3v7d9Nn29kzvjlRPp0YU3LWJGil76RTEvYlHmkINyi/ciqM3/3phyu/RNJLrhMTrq6KOXOqwBXPNAHasPIz7Hcn5N4Yrzs2MqHdfpqinzXskV9nSnunX0etXr5RE00ILbjxXrvCaz0C33xte3yNNYfLycbv6C1deCzvsz2bbQHKdkHh9VdSRSx28YMVWPSDXDGA3ysNYI8125BNyIZOrfx/aL7nKNvZMj4589W1aaMHZ5c6/7+KZz7w25ldwqR5pCpPXMrmWVxSUyfXi4vMEgyzJdULi9VVRRy51GwXfv3eXawawG+Vh3PtIfnH9JyKneaHbJn2Jk2vvV+Jt7JmuHSm2+pf+abkFdz0fdnOmScvreOVOm2B0OlTyV+2bJTdQe/3qlVdwfi2PcB1sE/whluQ6IfH6qqgjl7qNgv/68kWPyTUDq+n1ePq3ZJq+8jDWSLMdKeK0Pw+3Y5v0JTrAOp2tbNjGnunU0bLYqgy6Ik8vS67ipJIW1nGpHmkKNSjPp84fPPk6Aa3mH2by92F/yh9PCsl1QuL1VVFHLnVLBSu2Hty8cXV1lZYxRy+r2vPLTgmgpfIw1kizXSgAacMJnmWxln3p5Vkvuo0XabXm1+a0/A81e3r629oTsVvaMy07kmWxVZ1qvqy/0ZE20f8sjfltNdn+elmX2r5gTISvcvbQUZRmr+lQ0TGgef3rA8YxV+HVJ2Kn+W6tyMlVXwZ9VfR1Gvx7zZa07MsG6a5xEA+uU0fZJlX13tal9iu4jfv37j48OkoLmKNYoPC67QMyvPIwXnsk+6cFBZcccfwyNuWvQpu+xL/Wdy+Ka2pQL956SV54YtKv3OUpyV3umZYd6am95sJRFi/zHXnzRkjVPtGa83F2mfx0GmkKlfAhraGvuP8X6OueE235E11+657Hwv8yo4uZXPUl8Y8LeegLox9M06enyqWmheUG6U7fyPyjVVreDpeXFlrYpKoNO3KpHmlqUL5m4Pe3b9MysAXlYayRZpcov43o9UxDgW/iP+e36Uv0cuv0lrtTs8simr9vlOeWdrln/CxpYQn/0nbF0He/tOq1+Y5ED6J5DeUVDUUZrdA+tkr5jGkKldAXWl/u/OXL/zt8PKSVrinC5s9ONjXFTK7+Cj04PNR/Tv2bN2n8954aF5kWltuwOx2m+qEqH5ppdjvaP8UmVQ3Skbfd5BHW4poBbFt5GLc5kvUqpUBmaWraWvZlqbF1relFXes0MtzO9kynjlpa2JEp07uphZ9dzaVuo2Dsho5qv1xq6INl51M1v+KzUxAwuer/pH6MKHe6fm5wrNG/aWqSVvdlm3fnb1iKuW2ebkPtn2KTqgbpyNtu8ghtcM0Atqo8jLd6JI8lXl8VdeRSKyoYUQVMri+Oj+d/VtAPEN5KyS9NTc/qvmyo7rRmm6fbUNen2KSqDTvytps8Qhvn5+d6fK4ZwJaUh7FGmg0kXl8VdeRSKyoYUQVMrgt/aT7755Zmk71uQ1b3ZUN1R3Jt8LabPEJLv/z8E9cMYEvKw3jbR/Io4vVVUUcutaKCEVXM61wX8lbKN2l5evr1ZV27I7k2eNtNHqGlr7PZ9999yzUDDfqR7Bvu57qx8jDe9pE8inh9VdSRS62oYES1X8k1wHWuy3TtjuTa4G03eYT2fM3AH3/8d1oG93MdSD6GPdJsIPH6qqgjl1pRwYhqX5KrY81p3z9XvRs9+rIe3ZFcG7ztJo/Qia8Z+DqbpeW9d8H9XIdQHsa7OZJ3LF5fFXXkUisqGFHtS3I9Ofnxzu1bfhP6ZPXoy3p0R3Jt8LabPEInvmbg+bOnaRkYQnkY7+ZI3rF4fVXUkUutqGBEtRfJ9eL6r/ZN+b1Z1rUv69cdybXB227yCF35moE/P35My8DGysNYI80GEq+vijpyqRUVjKj2Irk+ODyc+HUC1rUv69cdybXB227yCD1wzQCGVR7GuzySdyZeXxV15FIrKhhRxU+ur1+9Ovn3H2uerE59We/uSK4N3naTR+iBawYwrPIwZjC2N9IBB4wheHJ9/+7dk8eP0sLkte/LNumO5NrgbTd5hH7+/PhRz8g1A9wVaxDlYcxgbG+kAw4YQ+TkqtfCB4eHE39XVqllX7ZhdyTXBm+7ySP09vzZU64Z4K5YgygPY400G0i8virqyKVWVDCiCptclwW7y8vL+b+eOhFt+rLNuyO5NnjbTR6hN2VWJdcfXr5My3uJu2INojyMd38k70C8virqyKVWVDCiiplclwW7s7MPmle8S8sTs7Yva9mdktzp6W/Lmq0xuW61I2+7ySNswtcMnJ+fp2Wgl/Iw1kizgcTrq6KOXGpFBSOqgMlVwa6xZjmmfNmrK0wLS7Tv7puDg8ZMSTHXm/S+3qANP0VaaGF1VVvtyNt6pKndev7s6ffffct9BrCJ8jAe60jeqnh9VdSRS62oYEQVLbnm+LJsTPnXka4wLSzSqbs7t29p5sXxcVr+h89cOgVqaLUVJzI35KdICyu1qWqrHXlbjzS1W75m4Jeff0rLQHflYTzWkbxV8fqqqCOXWlHBiCryO7SqM2xfs9nfinRbPaW6VkUdudRhC+6KawawofIw1kizgcTrq6KOXGpFBSMqkuuExOuroo5c6ugFc80ANlEexuMeyVsSr6+KOnKpFRWMqEiuExKvr4o6cqmjF3x1dcU1A+itPIzHPZK3JF5fFXXkUisqGFGRXCckXl8VdeRSp1Dw72/fqgauGUAP5WGskWYDiddXRR251IoKRlQk1wmJ11dFHbnUiRT88Ojo++++TQtAa+VhPIUjeXDx+qqoI5daUcH75vWrV98cHEz5behDIblOSLy+KurIpU6kYF8z8ObNr2kZaKc8jKdwJA8uXl8VdeRSKyp436y+cWQkJNcJiddXRR251OkU7GsG/vryJS0DLZSHsUaaDSReXxV15FIrKnjfvH/3TrF1sn8ldEAk1wmJ11dFHbnUSRX88Ojo/r27aQFooTyMexzJ0/89Y7++TK/oXe/0rJXPzj5ot3z69ClNDa1rRypJxWxeUo+94VK7FgwMjuQ6IfH6qqgjlzqpgrlmAF2Vh3GnI1lJyH/pIy1PVde+stns7weHh9q2feB7/eqVn85D+2cbZ7P84GlhJbUwX5KCdfp0Fz32hpRPnaaAMZBcJyReXxV15FKnVjDXDKCT8jDWSLMrnZ7+dnLyY/4TdGl2qnoXmTNfy6ym9f3X+Lx/vK1mBv9LKH7ktLDSi+NjranE+eTxI+dOjx5nyrvuDcvPqJGmgDGQXCckXl8VdeRSJ1gw1wygvfIwbnkkO4op/bTfZET9ilQ+8xlljTZZ7eLis9JqGVKVX715j5i4mh82LSznFsqTvmdnH/zzhv5NU+103RuZN/FIU8AYSK4TEq+vijpyqRMs+K8vX1RS+GsGFAj0Avz61au0jF7Kw1gjzbagBNN1k1H0KFIBVEEtN9gmqykUzp9bddpThE3LA2nZ0Yvj4/lrFXKebh9Ae+yNzJt4pClgDBUnVwZjSyMdcJOh2KqqYl8z8OTxI/XY9ewRGvIx7JFmW8hRJi1PVY8ilfn8E5G37ZTVSj5EB7/UtWVHC8/1KoZ68/ZXu26yN7yJR5oCxkByZTCaIx1wU3L/3t2HR0dpISIFAiWDwX8Vu296H8lRk6si3YPDQ3/sbXsn1zu3byn2pYXhdO2ooVNTG+4Nb+KRpjAl+plEP/zvw3dRrhaYkHh9VdSRS51swb5m4Pe3b9MysEh5GGuk2RZCJtfLy0u9kOezpN62X3JVGlDmm7+EYHOdOpqnbVv+pmLzveFNPNIUpkRfX31pnvCXCCal/G+jkWYDiddXRR251CkX/ObNrwc3b1xdXaVlYE55GHc6kkMmV72El5eletseydXvhdrSRdidOmrwV63lpbeb7w1v4pGmMCX6+Upf5cEvaJkgkuuExOuroo5c6sQLDn/NADZUHsadjuR4yVUprXHyydt2ymqOAt5QYxunXf3IaaGjk5Mf77S7Udcge8ObeKQpYAwk1wmJ11dFHbnUiRfMNQNYrTyMNdJsC8GS68XF528ODhp/IMrbdspqoodS7PONBTQa+W9zfti00IUK04Zt3ps11N7wJh5pChgDyXVC4vVVUUcudfoFc80AVigP405HcrDk+uDwcD7SeduuydVm//zRKY1OfzF1LT9mWuhC9bS8TmCoveFNPNIUMAaS64TE66uijlzq9Av+Opt9/9238a4ZeM/9XIdQHsadjuRIyVV5Tus8efyoMbytYpw+7nGkKbD6Efpl32X8mGmhNdV/cvJjWlhpwL3hTTzSFDAGkuuExOuroo5cahUFn5+fq8hg1wz4pVThNS2jl3wMe6TZFuIl19VDx1tauwufdh09ufrq27SwzoB7o9wkTWFK9BOIvoXq8EjLcZFcJyReXxV15FJrKfiXn386uHnj62yWlut3wf1ch1Aexp2O5EjJ9fLyUu3M87ZKcvpYx1tau4sXx8d6hH7bLtOmo5L+jyhAt3+j2IB7w5t4pClMiWKrvjT9fiqrC8l1QuL1VVFHLrWWgn3NwPNnT9MycK08jDsdyTnKpOWp2qRIb6tO03J3ygR3bt9KCwPp1NGy2Kp42jVP99gb3sQjTWFKfDJ+2J+sponkOiHx+qqoI5daUcG+ZuDPjx/TMrDBN8l9Tq6aOT39be37rhQIFm6+ofYdLYut/stYZf1tOlq2N1bwJh5pChgDyXVC4vVVUUcutaKCJd41A9hQeRh3OpKVfrxJ+19Dj6JrXyVvO5/V5n/Hqo81c3LyYw5/2mpLVxC6qrSwnJ7aay4cjV8Qt/mtsTckuaJGkZOrvuno27H+w3f6zzmiln1tbmd7plNHqkr19K7K26qvfr8rcamdCh4d1wygoTyMWx7J+o9zevqbs47Gndu32pyAHEv7vuZ52/lvL75X64vj47R8/U4Xr6yhPaOhz/b7vrSWnyUtLJF/rlg29K0vrXptvqN53rBTU97EI00BYwibXMtvPRr6nzz9iz9calpowd+eytHm5ia73DN+irSw3Gz293xV+madPr2OvmvrpeXk5EfH8SfX93zp+tJbPnuaqgHXDKBUHsYaaTaQbfSl7z8KcI2Tzf5B2tLUduyso8251G0UDHQSM7kqBin6nJ7+pqFA4/U1M/j/5GGt7aukiOb1y7E2ru14z/jx08Jyfsfug+s7C+pfb6XROJGwkM9GNF5d9DjKsp2ayk+qkaYq8fzZ0wDXDPjHjzY/emGF8jCu7khuI15fFXXkUisqGFEFTK4XF5+VycrUopTmTdokoRGt7qtBcVPtXJ8RSNaeOt39nmnTkSpXL2XxCqMKMdpQ/6ap5bStwm5a+IfjrLpLyy24VI80VQllViXX2q8Z0A8b2vNtvuJYoTyMNdJsIPH6qqgjl1pRwYgqYHJVapk/2aZ8o006RZndW91XSUFTr/RpobXd75k2Hb04Pp7P3DlSK9emqUUur/+qzXxy1VaaV0xPyy346TzSVD3+/PhRZVd9zYCOAR3SE//ZcvrKw1gjzQYSr6+KOnKpFRWMqCK/Q6vkMzprz0qOq31fipvKdp1+G77MVvdMm44WhhW15m2VttPUIk6uGo369Zia3JNzrvb82dPvv/uW+wzsufIwrvRIXi1eXxV15FIrKhhR7UtyVdRb/UbLKWjZl2OZx+anqba6Z1p2tJC3XX3OVXzO+MG/b3OoSY1Oyd5P55GmquJrBn75+ae0jL1UHsaVHsmrxeuroo5cakUFI6q9SK7Kdo1kM00t+3JWK4fya7/utr1nXF5a6Egbtrnq0RcGeGWfeT05+VG7qOtZZD+IR5qqja8ZOD8/T8vYP+VhrJFmA4nXV0UdudSKCkZU8ZOr3+5TxXuW2/elrKnEpqbUmrfqEUB3sGfad9TgPNry1/2Nk9Avjo97ZPH8CBppqkJcM7DnysO46iN5mXh9VdSRS62oYEQVObkq0PgiTo/pn3Zt2VdJHeWbW7X/pf/O9owfPy104fOm7atyCvfT9cvi3tYjTVWIawb2XHkYV30kLxOvr4o6cqkVFYyogp9zvbj4fHr6W/71uuJa+sQkte+rIYfX9rff382e8YOnhdZUm7Za/d6sBqVV5e/cTo/Trt7QI03V6Y8//lstcM3AfioPY400G0i8virqyKVWVDCi2ovrXBViFGu8Vftst3td+yo5tHV6N71se8/060gldWpEwd2njct2umZxb+WRpqr18OiIawb2U3kYMxjbG+mAA8awF8lV8u2T1r5XfUQ9+soU9bRt1+QqW90zPTp6/eqVkmhaaMGN5+IVXvMZ6E57w5t4pKlqXV1dcc3AfioPYwZjeyMdcJgSv/Xl/R7cFXtfkqv4bFzU5NrpLU0N29szXTvyBbhpoQXH7ju3b6Xla/nMa2N+NZfqkaZq9vvbt2rkry9f0jL2Q3kYMxjbG+mAw5T4zR4TvypyEHuUXF9c/3H8rjdL2qV+fZmTa7/f+G9vz3TqSLHVv/RPyy246/n/qPlEclpuwet33WrKHh4d3b93Ny1gP5SHMYOxvZEOOEyJT/1MOeQMZY+Sq76inU7C7V6/vuz1q1e9f9La3p5p39Gy2KoMuuL/4bLkKr7wNy204FI90lTlfM3Amze/pmUAAOq3L8nVb1ffxi/EB9SmL2W7s7MPjYSn7hTUGidc1ezp6W9rz8Judc+06UiWxVZ1qvncwnxH2uSbgwON+W012el6WZfasuBacM0AACCYgMn1yfWdSpVaysRTxWXLq/sy/2bf7SiuqUeFOcXW+ROTWkdrlucjd79n2nSkZ/dqC0dZ/3xH4s0bIVX7RCvPx9kV8jNqpKkQuGYAABBJwOT6+tWrvI7ii4bS3pbOKQ5rdV+mhOoAlxtUvwsjmn9drt7T8hh7xs+VFhY5O/uQS1o4ylQ935HpQfQpDQVWDUVbrdMptkr5pGkqhKurK3XENQMAgBhiXi1weXmpQGZpqgZr+8pSbyu7U3TTCo0At+M9076jNhZ2lCnTu6+umdVc6rAFT4Riq5qa+DUD+hHFP4alZQAAFtmjd2hNX7y+KurIpVZUcCf3792d+DUDvpRF4TUtAwC60E/++ha6vcv/poPkOiHx+qqoI5daUcGd/PXli/qa8jUDFxefFV734XsuAGyDYqu+zzfeChISyXVC4vVVUUcutaKCu1JsPbh54+rqKi0DAALRT/6KrfNv146H5Doh8fqqqCOXWlHBPdy/d/fh0VFaACLan1+YAnuL5Doh8fqqqCOXWlHBPfiagd/fvk3LQDj78wtTYG+RXCckXl8VdeRSKyq4H64ZQGz78wtTYG+RXCckXl8VdeRSKyq4N64ZAADUi+Q6IfH6qqgjl1pRwb2dn5+rR64ZAADUiOQ6IfH6qqgjl1pRwZv45eefpnbNwHv+EgEAbID7uU5RmS0YjO2NdMDF9XU2+/67byd1zcAT/hIBAGxgf96eSHJlMJojHXCh+ZqBPz9+TMtj4y8RAMAm9uftiSRXBqM50gEXna8Z+DqbpWWgftzPFQiP5MpgNEc64KLzNQPPnz1Ny0D99ucXpsDeIrkyGM2RDrg9MLVrBoAN7c8vTIG9VVNyBTA4rhkAAFSE5ArsNWVWJdfRrxl4z12xAAAtkFyBfffnx4+jXzPwhLtiAQBaILkC+J/nz56Oe80Ad8UCALRBcgWQrhn44eXLtAzUibtiAeGRXAH8b75m4Pz8PC0DFeKuWEB4JFcAyfNnT7//7lvuM4B6cVcsIDySK4DE1wz88vNPaRkAgIkhuQL4v3DNAABgykiuAP6FawYAAJNFcgXwL1dXV1wzAACYJpIrgKbf377lmgEAwASRXCeEs1yYjodHR99/921aAABM2/7czJjkOhXn5+f/9Z//8ccf/52WgVH5moE3b35NywCACdufmxmTXKfi4dGRjjnOcmE6fM3AX1++pGUAwFTtz82MSa6T4BOuHpx2xXToB6r79+6mBQAAxkZynQSfcPXgtCumg2sGAACTQnIdX3nC1YPTrpgOrhkAAEwHyXV85QlXD067YlLu37u77WsG3r97983BwetXr9IyAACLkFxHNn/C1eP3t2/TGsDY/vryRcfkVq8ZePL4kZ5C4TUtAwCwCMl1ZPMnXD0Obt7gz29iOhRbdVhu75qBi4vPCq/7cCdCANgG7ueKHVEgyEPJoFy8urpKKwETcP/eXf2glRaASdqfF2+ggfu5YgQ65tJHwPT4mgGuY8GU7c+LN9DA/VwxApIrJu7Nm18Pbt7gtwGYrP158Qb2Fsl1QkiumD6uGQAAjIjkOiEkV0wf1wwAAEZEcp0QkiuqsI1rBt5zP1cAQAsk1wkhuaIKX2ez77/7dthrBp5wP1cA2AB3xcIISK6ohf+CxoDXDHA/VwDYBHfFwghIrqjILz//xN/LwNRwP1fsrf25sQbJdUJIrqiIrxl4/uxpWgYmYH9OOwF7i+Q6ISRX1MXXDPz58WNaBsa2P6edgL1Fcp0QkiuqwzUDAIBdIrlOCMkV1RnqmoH33BULANACyXVCSK6o0SDXDDzhrlgAgBZIrhNCckWlnj97uuE1A9wVCwDQBsl1QkiuqJQyq5Ir9xkAAGwbyXVCSK6o158fP+oAPj8/T8vAGLifKxAeyXVCSK6o2vNnT7//7tvp32fg7OzDg8PD2ezvtHzt06dPmp8fjdUwcdzPFQiP5DohJFdUzdcM/PLzT2l5qk5Pf9P/NUXVtHxNi76/gT515/at169eabw4PtbHXkzrYdq4nysQHskVwGCmfM2AA6v+VUj1TQxOTn7UTJlyfIuDRk71apzGA4ApILkCGNJkrxm4vLx0MFV4vXP71ovjY+VX/Zs+fU2ZdT65is/Fnp19SMsAgJGQXAEMaeLXDFxcfF5xAcCy5Kr1F84DAHaM5ApgYH/88d/KeVO7ZsCZVYWdnv725PEjXwPw4PAwffrasuTqc668Yx3AZOkbl75T7cO3KZIrgOE9PDqa2jUDfgNW4zpXfXB5eekVZD65zmZ/L8y4ADAp/gF7H67IJ7kCGN7V1dW2rxlQ4lQG7cS3uHI81aIfp+RP+XICD78YvDg+5vZYAKZsf26sQXIFsBW/v32rzPfXly9peWhKk3r8TsPf0/Wvvr8vTKKNc65Kt347lyYJrwAwBSRXANvy8Ojo/r27aWFQCpEOowqUvgBgIf+i30OrpY2XayRX03Pl8JqmAAAjIbkC2BZfM/Dmza9peTi+aFXZNC0vos/m2KoIm2ZXWphcRanXj5OWAQAjIbkC2KItXTPw4vh4dWy9vLz0Jaoa83/rdZllyfXs7IMfKi0DAEZCcgWwXYNfM6AYuvr9s1pBadVZs3H3gNWWJVdfU8vtBQBgdCRXANt1dXWl2DfgNQMKpqvDaHl56+pTsw0KxNqkkVwdZ5WA9+FNuwAwcSRXAFun2Krwt737DJTyNakabd6VZVqzzLsPDg99Vyx/rE+1P3ELALunn7H1AzZ/iQAAhnH/3t0t3Weg1ONdWQAQgK/s5y8RAMAw/vryRd9Vf3/7Ni1vQb93ZQFAAPwlAgAY2Js3vx7cvHF1dZWWB9X7XVmIZH9+YQrsLZIrgN25f+/uw6OjtDCo3u/KQiT78wtTYG+RXAHszpauGej3rizEsz+/MAX2FskVwE4Nfs0A78oCgP1BcgWwawNeM8C7sgBAuCsWAGzL+fm5gubm1ww03pVFbAWwt/bnIm+SK4AR/PLzT5tfM1C+K4tLGwHsM+6KVavLy8uzsw+np79pfPr0qd85GG2lL7/GKJu3pE7Vo37GSstB6b+ivqBpoR3vdh8GnsEEfZ3Nvv/u202uGdDXN8dW7oIEAHsiTnJVTlVYVJI7OfnRydW/RtRi1zs7KvT45bDfvXU23HwtJbPyVFOaXUQFaD/4L1jOD+0r7bHXr151jYa7oTZfHB+XtanaRgsLR95EaUbHAPf1nCxfM/Dnx49puQsd2/krvvpdWToAtvozJCaF+7kC4QVJrk5y+rfxEqWXN30X0+gUzhwNV78crrDh5i3lfJyWl9Mrd36BL3+PoEfQjD+ldLvhrxiGDYjahwqdjeiv5Do/afn0m1630tQ1vYDpq094nSxfM/B1NkvL7egLqi+rv+I6JNLsEtv+7QcmxQeGvuhpGUA4EZKr49eL4+O0/G8KZH6F6xRepy+fc0rLK3lNxbu0XND+8fd6/ds7vGrfLnzw3hRH5h9QkwsjSM4xyt/zKyjLLtsQo/M1A8+fPU3LLfinGh/S+rqv/srqv8my7wwIST+sKrZu+HM4gCmrPrnmk20rzqt5Hb3IRTr3NlRylRzue+8ivVQMmFz9+775RLIsguQcs/DlSo+jR2uci8V0dL1mIP+iYNlXPNNn9aXnF8cAEEndyVUxyy9gq38133K1ugyYXCX/ANBjF3nboZKrv1gLy1h9ncCKApx1Fm6OKWh/zUD+cmusjqS+UESrRfp5FQBQd3LNL2NrT6vk03L5TJ4+0FZOM/pXD1UmG73aLUtC/pTHslM+Czcvn1H0sdZZVnn5LFpn/gSkHscdpeWVvOZ8SZke3+toNJ5rdSWa9FZKhypJ8gprW1jIKXPZbmnIZ4v19U1Ti/iaYH5rPFnKrEqua68ZyNd2+yvu461BB5sOofyuxNUHBgCgOnUn1yf/vNl89S8NRanFa+rFTyvrtc3nYxyq/CkNhS0t5odNGxe0vn//6FimdfTSqPU9tMLCzRvPqMXy/f7esORH1r9+JdbH2rbRoz7lzdPySl5TD5WWF8lllxcEr65EM9rKfakjfazhz67ecJkcoLV709RyWtm7UY+8ev1OD4tR/Pnxo75Aq68Z8JHWaejYSxsDAEKoO7nm16e0vJzDk1/JlKXyyRsFSg3FTb0oOlrpU69fvfJn08b/8INo5bT8z4w21AcaSkgLNy+fURla8c7p0JtraAWvKV5T66Tl6+s+vWFavqZNvG1aXslr6unS8iK5mLxay0q0QuPBW244T/tWq2mk5ZX0hfPKq/uy9mtiLM+fPe1xnwGgpG81+oZcfpcGEMw+JlfPOG/ld6PrX38gy0KhT/mUKfPynytoy5N5yzb3FQuN9ObJMlG51HI1B0E9e1q+toPk2rKS+eTacsN5Drhl5F3GD9h4lhVcpMJuWsb0+JqBX37+KS0D3fm7dJvvIQAqte/Jtcxb2cJQmCcbv3H2pIJUWl6eKRc+o7NaOXlx8Vlrrn3AHSTXlpXM99Vyw3l+KP2blpfQzxh+fdK/+eeN1Vo+MsblawbOz8/TMtCRr9dae2ESgHqRXBeEuYUxS98KPanPpqlr85PLUtrCZ3RhyxKVnvSkeLtJmr3WMgua11zYbOZKlq22opIVe1JWbDjPD7Vsb2ReTaMMx6vlTdIypur5s6fff/ct1wwAABYK8g6tRpqcl6+JzGt624V5a1kodPwqN5ldv/WnceZvkOSqB9GkytYHCx9w4eQyXnNZuLRlO1OLqytZ2Jes3XCe97C2SsuLeI9pvO5yi9Z8AKRlTBXXDAAAVqg7ueYQszqTidNVeZ3lsrwly2KWT7uWOdUFNN4NsGzzhc/oR2hkNcUsPYsex4sLH7BlFjSvuWIvOYJrlLtI2lSysK82G87zQzX2RklfAj2s1lHGbXmdgL24vrmEtkrLmDCuGQAALFN3cs1vkFqRdSTHsjJdLcxbtiJm6VNKTgpASmYPDg+Vh3I4y5ZtvvAZtajJsn5f+Vqm4YUPuKLIeV5zYbPmMhrrtKxkvq+WG87zQ5V7o8FvaNNQhE1Tcxo/SNjaR8akPDw64poBAMC8upOr5Mi1Isp4ncZZuvm8lS2LWdpcyWnFE9myzRc+o2srE5W31YOk5SUP2DILmtdc2Kz4XLKGuktT1zy5tpL5vlpuOM+Rd9mZUe8rjWWNiH6YWXi3ARepnzfSMqbt6uqKawYAoD29gH6zH7eEqz65ikNJI3Vl/v2yRiNxLsyRtixmaRM9y9pfUq/YfP4Zncb0qbT8T+wrDz7nOQ19nLtomQXNay5r1r9/n2/NW62tpNFXLmzthvPO/rnXVVou5Idd9oU2ZdOFbbrHffgvHcbvb9/qS8Y1AwDQhl/myjgRVYTkqrzlqxj1byN7KQktjK2iAKRNFp6Ey/mpsZUnNe788/eiPBTLlKvSSss391HVyFUqQJPloaaPNaOVFbM0tOh1NPREec2c5FYEQcvXVOhxypVVZ35kfTCfyFtW4kmtptb0JdBTtNxwIe+lRlOqTfvcj9m4K5lpBe0QP0v5tTB91s8+3yOmzNcMpAUAwHJ+tV0bCQKIkFxNOcxhVF85RSiFGGUdx6lGXvFX11FGQ2uWWUfrOyRp6IMyaGpD56qFQ5/VOgs316ecrTX0CE66og88qZHL0GGXH0EdaVH1+3lVtnspn0XrlEWW9IDlmo2hee+rhVlQ2lQi2tyr6VPeCS03XMj7xI+T5eDbZsy3458l9CBpGZXwNQNv3vyalgEAey9OcjWlFsc1RR8HwQHpMZWr9IGimB7clIr0dApkympebRB6ZD1LWrg+a1gu7lLLSrRa+ugf/VrQV1AZd+G1qr05+C4L6JgyXzPw15cvaRkAsN+iJdftUQ5Tolp2vlDz+mxawGb0k8CAQdNfGj1mWkZtHh4d3b93Ny0AAPYbybWtO7dvPVj+3iDlWn4ZPaAXx8dDnXZVZl3xhcP0cc1Ae/qRj8HYwUgHHDAGkmsrF//cN0oxaP5c4PvrC2eXnY5FD9qZK67fbU8/Uehx+NLUjmsGWvK3KQZj2yMdcMAYSK5t+VfYHneKewtokdi6Ja9fvdokvPrmCXxpYrh/7y7XDKyVv0cxGFsd6YDDlOgV8xvu54qGy8tLBSkH1geHh/pXB8r8O5MwIO3efntYsVUjLaB+f335otdLrhlYrcwWDMb2RjrgMCWKrfrSKJmk5bhIrgDqoNiq78tXV1dpGXNysPBIs4HE66uijlxqRQXvG1+42OYePrUjuQKoxv17dx8eHaUFzCmzRch4Ea+vijpyqRUVjKhIrgCq4WsGfn/7Ni3j38psoZFmA4nXV0UdudSKCkZUJFcANXnz5teDmze4ZmChMluEjBfx+qqoI5daUcGIiuQKoDJcM7BMmS1Cxot4fVXUkUutqGBERXIFUBmuGVimzBYaaTaQeH1V1JFLrahgREVyBVCfX37+iWsG5pXZImS8iNdXRR251IoK3jfczxUApuvrbPb9d99yzUBDmS1Cxot4fVXUkUutqOB9w/1cAWDSzs/P9W2aawZKOVh4pNlA4vVVUUcutaKC9w33cwWAqfM1A19ns7S898psETJexOuroo5cakUFIyqSK4Ba+ZqB58+epuW9V2aLkPEiXl8VdeRSKyoYUZFcAVTM1wz8+fFjWt5vZbbQSLOBxOuroo5cakUFIyqSK4C6cc1AVmaLHvHi8vLy7OzD6elvGp8+fZrN/k6fmKNPaZ07t29ptTS1E/36mrKKOnKpFRWMqEiuAOrGNQNZmS06xQsF0CePH31zcHBy8qOT64PDQz2CFhVn00r/8M13/BQTTK4qSRUqVXtlD7WjptIa1+toMXeh3svP7pILSAvL+c03XtljYc2ayY2rO+2H+S9fb/mpNdIUMAaSK4Dqcc2AldlCI82uo3iqlfVv4ySr4p3Sj8bZ2Yc09Y+Li89+igkmV1Mv7stjYYBTsNOnxr3/pctLC+u44NWb6Cuizyqprzhl3k9+6hXPDuwAyRVABM+fPeWagTJbtIwXjncvjo/T8r/lhDofXj0/2eRq+Tzl/OlJBTuF8tFv2967o2V7Xh2prwFPtWZ+Xo80BYyB5AogAmVWJdc9v2agzBZt4oXynNdcEXS8znwY8oYTT66OpwvrVwRUak8L4+nakbrwJg8OD9NUQf3euX1rS3Hcz+uRpoAxkFwBBPHnx496TT0/P0/L+6fMFhppdomcgVYHuGWreXLiyVX823MNRdU0df1r9238Pr2HHh3lnzfmTySrr7LNYflJPdIUMAaSK4A4nj97+v133+7tNQNltlgbL3IAWnuKzu/W0iijnmecXC8uPuvRNBb+/R6t48+enX3QI8xfeNCenzQttJYvD1UNWlQBW/p9eg/9OvJXpNGFdv5W+3Kp/QoGBkRyBRCHrxn45eef0vKeKbPF2niRr5hcGDdLL46PvWYZOj2jVFq+bUijcWpWi3oirSb6WCtsclLQT5EWWvPv0LWhgp1j6ybpeVj9OsrXH5c7U3HW0XxL/IweaQoYA8kVQCj7fM1AmS000uwSLVcT5SGvWQYjzyg5aWheI9+PSVnW67x/906L5ZnaDX+d7cdPC10oN3tbja3Gu656d9T4oujfhVe+DshP55GmgDGQXAFEs7fXDJTZYm28aLmaNEKSeSaHVFFCzdcV+HfWPslaJld9PEpylcY1AxPRu6PyRLJyuf5de+58Qy61d8HAUEiuAKLZ22sGymyxNl60XE1WJFdlprR8Lb+dy2s6ub44Pi7Da2OTTvzgaaGj3MVWLwbtapOOdnwiOT+XRprCPtGPRo1rgUr6P9WQPrEFJFcAAf3+9q1eX/ftmoEyW2ik2SVaribtk6v4tKvXPDv74NUUFjVT5td+/GhpoQuflcyNbHLed1i9OzL/bKCx+b5dy0/kkaawT/xbi7QwR5/Nv3K5c/uW/rvpA/3Uuo0IS3IFENPDo6N9u2bALxt5pNkllN682tqToDkelWsu29YPm/+0gS919XB29Hw/fpy00JpSnZ7at1CY2jUD/TrKchZPy9vkJ9rZ02Ei9B9HSfTi4rM/0Iy+ISz82c//2fP/ff/gqv96g4dXkiuAmK6urvbtmoEcLDzS7BI59KzNcA6jegVKy9e87bLkWj6mXrdy9tXY5I1EfoS00JqeMV+PW14eutVfaLbUr6OM5IptU2bVfxYN/WdXKvX/5YX/i/0p/4ho5W9gBkRyBRCWrxn468uXtBydmi1Hml1Cuc2rLTx9kinqebXGy48nlyVXv3qVv8LW658/lT/bgzdPC+34l5hp4Zpq9uOsbnw3enRUIrliN/S/Rj/yaeiQW/Yjn9Ktjo3yfz3JFQA6e3h0dP/e3bQQXQ4WHml2uZx7Vrwt3evoFat8QRJvOJ9cfXrGK2vbxlYOr/kMaFd+0rTQgiJyLqY0nWsGunbUkL+CaXmb/EQ7ezpsj/5HOGVqrP35TSv7v60OthfHxwqjzq/p0//Q9xCtU/6U6BkNrhYAgA58zcCbN7+m5dD8OpFHml3Jr0mNs5JZ/kXhfLT1UzSSqy90y69q+qDxCudL3+Zf9lryk6aFdfzCOZ+tpXzlnm9tlzp1NE97csNHaM9PtLOnw/bkw8Zj4f+RzCvrX/3n1TcK/d/Rv/rvkz79D6/mH0q1jlb2tw594BUGRHIFENz+XDPg16E80uxKeo15cf0nsvSvPk6z1/Jrz8Js56cot3LMPSnum6MXs8bmemHTTO9zMO378lNrpOU5juwajQp3rH1HC/lrp7GNfNDgJ/JIU6iQLxPSYa+fM5VB9fGd6/ddreXfVKSFOX4o/6fTBxpav/EtZSgkVwDx7ck1A37ByCPNtuCzKdpEeU6ZT+lTL2Z6BdLHy1579PrnN2RoNW2l4fXTp685PmodrZkfdpOY2KYvvR7rWbymhgprnFLSol+D81CRioCD/06zDReQFrrw/ixb0EzvC4jbyM+lkaZQIR3qOlr83zD/4Nr4n7uQk25a+Dc9jh5ED6sP9P9I30/8f3BLP1CRXAHEd3V1pW+j4a8ZUI/lSLOt6SVHqc4BaPUvEDO9UGlNS1MFp97V63TSr68pq6gjl1pRwZin/4NKn/6Pmem/vENnWu5OCVVHhUJwWi4uct3kYZchuQLYC4qt+jYa+5oBv1TkkWYDiddXRR251IoKxjyF1IVRUol2kxP2PnHbOMPqQ2Ubp11JrgD2xf17d2NfM+CXijzSbCDx+qqoI5daUcHYmW/m7oflq2k1tnEROckVwL7468sXfSf9/e3btByOXyrySLOBxOuroo5cakUFYzc+Xd8g+cm/767lS8mXXRe7IZIrgD3y5s2vBzdvXF1dpeVYcrDwSLOBxOuroo5cakUFY5nZ7O/37975XZX6aurfhe9QPDv7cHp9Y7vVFxL4nYJazYt6nPzezfnHHATJFcB+uX/v7sOjo7QQi1NFHmk2kHh9VdSRS62oYCykPOrAqvHg8LDMr+Vv9vOv+zWWJddPnz6VN7jwDUn0gf7V/Dbem2UkVwD7JfA1A/klxCPNBhKvr4o6cqkVFYx5+X5wjZzqAKromZaLGx6v+I2/sqkCbsP2AmtGcgWwd6JeM+BXmjzSbCDx+qqoI5daUcFo8B0ANBqx1RxVfSsAX7rqoY+9wnSQXAHso++/+zbeNQP5xcYjzQYSr6+KOnKpFRVcL31rOj8/TwsDOS3+4uvC3/4rs+pTr6//fOuD679LolHeonU6SK4A9pFeGPR9Odg1A36xySPNBhKvr4o6cqkVFVwv7+QB8+tlcdFqeUlAyes8efxIuTavrMn06SkhuQLYU7/8/FOwawby641Hmg0kXl8VdeRSKyq4XuWuHiS/lu+jWnGjAH32weGh32Wl4fOvE0RyBbCnvs5m33/37fNnT9Ny/fx6k0eaDSReXxV15FIrKrhe5a722CS/zmZ/5zCqseIdVHkdDW2yg/da9UNyBbC/fM3Anx8/puXKlS88Gmk2kHh9VdSRS11RcLkCYxtD+bXH74h8AavHk3//vYCGvJrG6nu4jovkCmCv+ZqBr7NZWq5Z+cKjkWYDiddXRR251IoKrle5q/P4/rtv//jjv9MaXZSXCuS/FzCvvBZ2S3/7aigkVwB7LdI1A/mFxyPNBhKvr4o6cqkVFVyvcldr9M6sduf2rfxQK25xVd4Ja/6eWZNCcgWw78JcM5BfeDzSbCDx+qqoI5daUcH1yvt5w8xq+dE0VtwrIP/pgWneCatEcgWAINcM5NcnjzQbSLy+KurIpVZUcL20hx8eHQ3ys3R5DcCKL1x5Lew074RVIrkCwP++ZkDJtfZrBvJrj0eaDSReXxV15FIrKrheQ93GVVom1/KKgjK5Xlx8nmCQJbkCwP/258eP+q5d9TUD+bXHI80GEq+vijpyqRUVDJnN/s5ftW8ODtLsv71+9corOL+WF7k+ODzkr78CwHQ9f/a06msG/PKTR5oNJF5fFXXkUisqGFaeT52/RWu+TkCr+QRt/gME/pQ/nhSSKwAkvmbgl59/Ssu18StQHmk2kHh9VdSRS62oYNjp6W/5C9e4S+unT5/8Rwr0r68KcMxVePWJ2Gm+W4vkCgD/F18zMOB1ZrukysuRZgOJ11dFHbnUigpGlu8boITqiwFms79zovXZVq9Z3vxVY5q3xyK5AsC/PH/29Pvvvq3xmoHyJUcjzQYSr6+KOnKpFRWMTDn1xfFx/vL5PKuGMmvjbxMowubPnp19SLMTQ3IFgH+p95oBv97kkWYDiddXRR251IoKRoNSqXLqycmPGvpg2flUza/47BSQXAGgqdJrBspsoZFmA4nXV0UdudSKCkZUJFcAWODh0VF11wyU2SJkvIjXV0UdudSKCkZUJFcAWODq6qq6awbKbBEyXsTrq6KOXGpFBSMqkisALPb727d6ka7omoEyW2ik2UDi9VVRRy61ooIRFckVAJZ6eHR0/97dtDB5ZbYIGS/i9VVRRy61ooIRFckVAJbyNQNv3vyalqetzBYh40W8virqyKVWVDCiIrkCwCq+ZuCvL1/S8oSV2UIjzQYSr6+KOnKpFRWMqEiuALBGLdcMlNkiZLyI11dFHbnUigpGVCRXAFijlmsGymwRMl7E66uijlxqRQUjKpIrAKxXxTUDZbbQSLOBxOuroo5cakUFIyqSKwC0cv/e3YlfM1Bmi5DxIl5fFXXkUisqGFGRXAGglb++fNFr9pSvGSizhUaaDSReXxV15FIrKhhRkVwBoC3FVr1sX11dpeWJKbOFRpoNJF5fFXXkUisqGFGRXAGgg/v37j48OkoLE1Nmi5DxIl5fFXXkUisqGFGRXAGgA18z8Pvbt2l5SspsoZFmA4nXV0UdudSKCkZUJFcA6ObNm18Pbt6Y4DUDZbZgMLY30gEHjIHkCgCdTfOagUa8YDC2NNIBB4yB5AoAnU3zmoEyW2ik2UDi9VVRRy61ooIRFckVAPr45eefpnbNQJktQsaLeH1V1JFLrahgREVyBYA+vs5m33/37aSuGSizRch4Ea+vijpyqRUVjKhIrgDQ0/n5uV7F//jjv9Py2MpsoZFmA4nXV0UdudSKCkZUJFcA6M/XDHydzdLyqMpsETJexOuroo5cakUFIyqSKwD052sGnj97mpZHVWaLkPEiXl8VdeRSKyoYUZFcAWAjvmbgz48f0/J4ymyhkWYDiddXRR251IoKRlQkVwDY1ESuGSizRch4Ea+vijpyqRUVjKhIrgCwqYlcM1Bmi5DxIl5fFXXkUisqGFGRXAFgAH9+/KhX9HGvGSizhUaaDSReXxV15FIrKhhRkVwBYBjPnz0d95qBMluEjBfx+qqoI5daUcGIiuQKAMNQZlVyHfGagTJbhIwX8fqqqCOXWlHBiIrkCgCD8TUD5+fnaXm3ymyhkWYDiddXRR251IoKRlQkVwAY0vNnT7//7ttRrhkos0X7eHF5efnp06f3797p3zQ1VZ36kqFa0yOkj4bWtaNsk5L6betSexcMDIXkCgBD8jUDv/z8U1reoTJbtIkXs9nfr1+9Kje5c/vW2dmH9OnpcZFpYaWhWlPI04Ytn7QH15YW2tmkpE22dakeaQoYA8kVAAY21jUDZbbQSLPLvTg+1moPDg+fPH6kf/OGm5zP2yqXlxZW2ry109PfTk5+/ObgwBum2aF1evBNStq8HW/Ye3NgKCRXABjeKNcMlNlibbz49OnTndu3Li4+p+X/+Z+zsw9ONvo3TU1Mm75kkNZms7/1r5Juyyftp9ODb1LS5u14w96bA0MhuQLA8Ea5ZqDMFmvjxYvj4zLb2enpb952mte8tulLBmxNK7d80n56PPgmJW2yrTfsvTkwFJIrAGzF72/f6jV+l9cMlNlCI80usfD35rPZ3952mle7tulLBmyN5Jp5w96bA0MhuQLAtjw8OtrlNQNltugdL7ytIk5anpJN+pIerZFcM2/Ye3NgKCRXANiWq6urg5s33rz5NS1vWZktescLbVj7da7L9GiN5Jp5w96bA0MhuQLAFvmagb++fEnL21RmC40024WTzenpb2l5Ynr3Jf1aI7lm3rD35sBQSK4AsF0Pj47u37ubFrapzBb94sXJyY93bt/y+9AnqHdf0q81kmvmDXtvDgyF5AoA27WzawbKbNEjXlxcfNZW03xvlvXrS3q3RnLNvGHvzYGhkFwBYOt2c81AmS000mxrDw4PJ3udgPXrS3q3RnLNvGHvzYGhkFwBYBd2cM1AmS26xovXr16dnPyYFqaqR1+ySWsk18wb9t4cGArJFQB24a8vX/SSX14zoI+HPQtbZguNNNvC+3fvnjx+lBYmrGtfsmFrJNfMG/beHBgKyRUAdkRRVa/6Sqsa9+/d1cfD/p2CHCw80uw6ynYPDg8n+66sUqe+ZPPWSK6ZN+y9OTAUkisA7I4C6//z//F/zwlg2Ldt5Yf1SLMrLct2l5eX839AdXTt+5JBWiO5Zt6w9+bAUEiuALAj5+fn/8f/8f8qE8C4yXVZtjs7+6B5Jby0PBkt+5L2rSnMnZ7+tqzZGpPrio5IrgiA5AoAW/d1Nvvl55/K136Ph0dHaY0hNB48zS6hbNdYvxzTvOzVtaWF5Tq19s3BwfxkpqTrrTa55GAFP3haaGdtSSs62qQdb+iRpoAxkFwBYOt8V6z5MVZyzQlm2VD4S6tOiWtLC0t0be3O7VuafHF8nJb/4TOXToEaWm3Fqdne/OBpYZ2WJS3saPN2vKFHmgLGQHIFgF3468sX5dTy5V/j4OaN9OkhNB48zQayjb5ms7+V6rZ0SnWtijpyqdsoGOiE5AoAu/PHH//9/XffbikElA877CNPRLy+KurIpVZUMKIiuQLATn2dzXx7LI8Bb+maH9MjzQYSr6+KOnKpFRWMqEiuADCCq6ur58+eKgQMeEvXMltopNlA4vVVUUcutaKCERXJFQBGo9iqCJsWNlZmi5DxIl5fFXXkUisqGFGRXAEgiDJbhIwX8fqqqCOXWlHBiIrkCgBBlNkiZLyI11dFHbnUigpGVCRXAAiizBYh40W8virqyKVWVDCiIrkCQBBltggZL+L1VVFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJktGIztjXTAAWMguQJAEI14wWBsaaQDDhgDyRUAgggfL+L1VVFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJktQsaLeH1V1JFLrahgREVyBYAgymwRMl7E66uijlxqRQUjKpIrAARRZouQ8SJeXxV15FIrKhhRkVwBIIgyW4SMF/H6qqgjl1pRwYiK5AoAQZTZImS8iNdXRR251IoKRlQkVwAIoswWIeNFvL4q6silVlQwoiK5AkAQZbYIGS/i9VVRRy61ooIRFckVAIIos0XIeBGvr4o6cqkVFYyoSK4AEESZLULGi3h9VdSRS62oYERFcgWAIMpsETJexOuroo5cakUFIyqSKwAEUWaL9vHi8vLy06dP79+9079paqo69SVDtaZHSB8NrWtH2SYl9dvWpfYuGBgKyRUAgiizRZt4MZv9/frVq3KTO7dvnZ19SJ+eHheZFlYaqjWFPG3Y8kl7cG1poZ1NStpkW5fqkaaAMZBcASCIMlu0iRcvjo+12oPDwyePH+nfvOEm5/O2yuWlhZU2b+309LeTkx+/OTjwhml2aJ0efJOSNm/HG/beHBgKyRUAgiizxdp48enTpzu3b11cfE7L//M/Z2cfnGz0b5qamDZ9ySCtzWZ/618l3ZZP2k+nB9+kpM3b8Ya9NweGQnIFgCDKbLE2Xrw4Pi6znZ2e/uZtp3nNa5u+ZMDWtHLLJ+2nx4NvUtIm23rD3psDQyG5AkAQZbZYGy8W/t58Nvvb207zatc2fcmArZFcM2/Ye3NgKCRXAAiizBa944W3VcRJy1OySV/SozWSa+YNe28ODIXkCgBBlNmid7zQhrVf57pMj9ZIrpk37L05MBSSKwAEUWaLfvHCyeb09Le0PDG9+5J+rZFcM2/Ye3NgKCRXAAiizBb94sXJyY93bt/y+9AnqHdf0q81kmvmDXtvDgyF5AoAQZTZoke8uLj4rK2m+d4s69eX9G6N5Jp5w96bA0MhuQJAEGW26BEvHhweTvY6AevXl/RujeSaecPemwNDIbkCQBBltugaL16/enVy8mNamKoefckmrZFcM2/Ye3NgKCRXAAiizBad4sX7d++ePH6UFiasa1+yYWsk18wb9t4cGArJFQCCKLNF+3ihbPfg8HCy78oqdepLNm+N5Jp5w96bA0MhuQJAEGW2aBkvlmW7y8vL+T+gOrr2fckgrZFcM2/Ye3NgKCRXAAiizBZt4sWybHd29kHzSnhpeTJa9iXtW1OYOz39bVmzNSbXFR2RXBEAyRUAgiizxdp4oWzXWL8c07zs1bWlheU6tfbNwcH8ZKak6602ueRgBT94WmhnbUkrOtqkHW/okaaAMZBcASCIMlusjhc5wSwbCn9p1SlxbWlhia6t3bl9S5Mvjo/T8j985tIpUEOrrTg125sfPC2s07KkhR1t3o439EhTwBhIrgAQRJktQsaLbfQ1m/2tVLelU6prVdSRS91GwUAnJFcACKLMFiHjRby+KurIpVZUMKIiuQJAEGW2CBkv4vVVUUcutaKCERXJFQCCKLNFyHgRr6+KOnKpFRWMqEiuABBEmS1Cxot4fVXUkUutqGBERXIFgCDKbBEyXsTrq6KOXGpFBSMqkisABFFmi5DxIl5fFXXkUisqGFGRXAEgiDJbhIwX8fqqqCOXWlHBiIrkCgBBlNkiZLyI11dFHbnUigpGVCRXAAiizBYh40W8virqyKVWVDCiIrkCQBBltggZL+L1VVFHLrWighEVyRUAgiizBYOxvZEOOGAMJFcACKIRLxiMLY10wAFjILkCQBDh40W8virqyKVWVDCiIrkCQBBltggZL+L1VVFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJktQsaLeH1V1JFLrahgREVyBYAgymwRMl7E66uijlxqRQUjKpIrAARRZouQ8SJeXxV15FIrKhhRkVwBIIgyW4SMF/H6qqgjl1pRwYiK5AoAQZTZImS8iNdXRR251IoKRlQkVwAIoswWIeNFvL4q6silVlQwoiK5AkAQZbYIGS/i9VVRRy61ooIRFckVAIIos0XIeBGvr4o6cqkVFYyoSK4AEESZLULGi3h9VdSRS62oYERFcgWAIMps0SNevH/3Ln00Vf36souLz6env11eXqblFrTy2dkH7ZZPnz6lqaF17UglqZjNS+qxN1xq14KBwZFcASCIMlt0ihdKQndu3+q0ySi69pXNZn8/ODzUtu0D3+tXr/x0Hto/Snvpc8Pxg6eFldTCfEkK1unTXfTYG1I+dZoCxkByBYAgymzRMl6cnv52cvLjNwcH7TcZUe8ic+ZrmdW0vnKhdo73j7fVjDJfWmMgfuS0sNKL42OtqcT55PEj506PHmfKu+4Ny8+okaaAMZBcASCIMlu0jBeOYko/7TcZUb8ilc98RlmjTVa7uPistFqGVOVXb94jJq7mh00Ly7mF8qTv2dkH/7yhf9NUO133RuZNPNIUMAaSKwAEUWaLTvFCCabrJqPoUaQCqIJabrBNVlMonD+36rSnCJuWB9KyoxfHx/PXKuQ83T6A9tgbmTfxSFPAGEiuABBEmS06xYscZdLyVPUoUpnv9atX+sDbdspqpSePH2nzwS91bdnRwnO9iqHevP3VrpvsDW/ikaaAMZBcASCIMlt0ihdRk6si3YPDQ3/sbXsn1zu3byn2pYXhdO2ooVNTG+4Nb+KRpoAxkFwBIIgyW3SKFyGT6+Xl5TcHB/ksqbftl1zfv3unzDd/CcHmOnU0T9u2vM51873hTTzSFDAGkisABFFmi07xImRyffL4UXlZqrftkVz9Xij/kn1wnTpq8Fet5aW3m+8Nb+KRpoAxkFwBIIgyW3SKF/GSq1KaslpauOZtO2W19+/e+fJWj22cdvUjp4WOTk5+vNPuRl2D7A1v4pGmgDGQXAEgiDJbdIoXwZLrxcXnbw4OGn8gytt2ymqih1Ls840FNBr5b3N+2LTQhQrThm3emzXU3vAmHmkKGAPJFQCCKLNFp3gRLLk+ODycj3Tetmtytdk/f3RKo9NfTF3Lj5kWulA9La8TGGpveBOPNAWMgeQKAEGU2aJTvIiUXJXntM6Tx48aw9sqxunjHhetKrD6Efpl32X8mGmhNdV/cvJjWlhpwL3hTTzSFDAGkisABFFmi07xIl5yXT0U19LaXfi06+jJ1VffpoV1Btwb5SZpChgDyRUAgiizRad4ESm5Xl5eqp153lZJTh/nm0N18uL4WI/Qb9tl2nRU6np/rgH3hjfxSFPAGEiuABBEmS06xYscZdLyVG1SpLdVp2m5uyePH925fSstDKRTR8tiq+Jp1zzdY294E480BYyB5AoAQZTZolO82OfkqpnT09/Wvu9K0XDh5htq39Gy2Oq/jFXW36ajZXtjBW/ikaaAMZBcASCIMlt0ihdKP96k/a+hR9G1r5K3nc9q3xwcaL681lMfa+bk5Mcc/rSVVlN29OKAXFVaWE5P7TUXjsaFqvMdzfOGJFfUiOQKAEGU2aJlvPD5OWcdjTu3b7U5ATmW9n3N87bzWc33an1xfJyWr9+575U1tGc09NlOIa89P0taWCL/XLFsNCL1fEfzvCHJFTUiuQJAEGW2CBkvttHXbPa3AlzjZLOyuyYtTW3HzjranEvdRsFAJyRXAAiizBYh40W8virqyKVWVDCiIrkCQBBltggZL+L1VVFHLrWighEVyRUAgiizRch4Ea+vijpyqRUVjKhIrgAQRJktQsaLeH1V1JFLrahgREVyBYAgymwRMl7E66uijlxqRQUjKpIrAARRZouQ8SJeXxV15FIrKhhRkVwBIIgyW4SMF/H6qqgjl1pRwYiK5AoAQZTZImS8iNdXRR251IoKRlQkVwAIoswWDMb2RjrggDGQXAEgiEa8YDC2NNIBB4yB5AoAQTTiBYOxpZEOOGAMJFcACKIRLxiMLY10wAFjILkCAACgDiRXAAAA1IHkCgAAgDqQXAEAAFAHkisAAADqQHIFAABAHUiuAAAAqAPJFQAAAHUguQIAAKAOJFcAAADUgeQKAACAOpBcAQAAUAeSKwAAAOpAcgUAAEAdSK4AAACoA8kVAAAAdSC5AgAAoAb/8z//f836lL5OS24gAAAAAElFTkSuQmCC" width="520" alt=""></p>
+<p>위 그림은 관찰값이 3개 있을 경우 bootstrap 방법에 대해 나타낸다.</p>
+<p>3개의 관찰값을 중복 허용의 랜덤 샘플링하여 3개를 뽑아 새로운 데이터셋을 만들고 이를 이용하여 모수를 추정한다.</p>
+<p>모수 <span class="math inline">\(\alpha\)</span>에 대한 추정치는 각 bootstrap 단계인 <span class="math inline">\(Z^{*r}\)</span>마다 계산할 수 있다. 이를 <span class="math inline">\(\hat \alpha^{*r}\)</span>라 하자.</p>
+<p>이를 <span class="math inline">\(B\)</span>번 반복하여, <span class="math inline">\(\hat \alpha^{*r}\)</span>들의 표본평균인 $ $를 bootstrap 추정량으로 삼는다.</p>
+<p>Bootstrap 방법에 의한 <span class="math inline">\(\alpha\)</span>의 추정량의 표준오차는 다음으로 추정한다.</p>
+<p><span class="math display">\[ \mathrm{SE}_B (\hat \alpha) = \sqrt{\frac{1}{B-1} \sum_{r=1}^{B} \left( \hat \alpha^{*r} - \overline{ \hat \alpha^{*}} \right)^2} \]</span></p>
+<section id="bagging의-기본-원리와-예측-방법" class="level4" data-number="9.2.1.1">
+<h4 data-number="9.2.1.1" class="anchored" data-anchor-id="bagging의-기본-원리와-예측-방법"><span class="header-section-number">9.2.1.1</span> Bagging의 기본 원리와 예측 방법</h4>
+<p>다시 Bagging의 내용으로 돌아가서, <span class="math inline">\(B\)</span>개의 서로 다른 bootstrap 훈련 데이터 셋을 만들었다고 하자.</p>
+<p>예를 들어, Regression 문제에 대해 <span class="math inline">\(b\)</span>-번째 bootstrap된 훈련 데이터를 이용하여 <span class="math inline">\(\hat f^{*b}\)</span>의 적합 모형을 얻었다고 하자.</p>
+<p>그러면 <span class="math inline">\(x\)</span>에서의 예측은 다음과 같이 얻을 수 있다.</p>
+<p><span class="math display">\[ \hat f_{\mathrm{bag}}(x) = \frac{1}{B} \sum_{b=1}^{B} \hat f^{*b}(x) \]</span></p>
+<p>이를 bagging이라 한다.</p>
+<p>Classification 문제의 경우 평균을 낼 수 없으므로, 다수결 (majority vote) 개념을 이용한다.</p>
+<p>즉, 여러 개의 분류기 <span class="math inline">\(\hat f^{*b}(x)\)</span>의 예측값들 중 가장 많은 표를 획득한 클래스가 예측값이 된다.</p>
+</section>
+</section>
+<section id="예제" class="level3" data-number="9.2.2">
+<h3 data-number="9.2.2" class="anchored" data-anchor-id="예제"><span class="header-section-number">9.2.2</span> 예제</h3>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.load_breast_cancer.html"><code>sklearn.datasets.load_breast_cancer</code></a>를 이용한 분류 문제</p>
+<p>먼저 트리 하나를 이용하여 모형을 훈련하여 본다.</p>
+<div id="cell-23" class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> datasets</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>raw_cancer <span class="op">=</span> datasets.load_breast_cancer()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-24" class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>X, y <span class="op">=</span> raw_cancer.data, raw_cancer.target</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-25" class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(X, columns <span class="op">=</span> raw_cancer.feature_names)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="22">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">mean radius</th>
+<th data-quarto-table-cell-role="th">mean texture</th>
+<th data-quarto-table-cell-role="th">mean perimeter</th>
+<th data-quarto-table-cell-role="th">mean area</th>
+<th data-quarto-table-cell-role="th">mean smoothness</th>
+<th data-quarto-table-cell-role="th">mean compactness</th>
+<th data-quarto-table-cell-role="th">mean concavity</th>
+<th data-quarto-table-cell-role="th">mean concave points</th>
+<th data-quarto-table-cell-role="th">mean symmetry</th>
+<th data-quarto-table-cell-role="th">mean fractal dimension</th>
+<th data-quarto-table-cell-role="th">...</th>
+<th data-quarto-table-cell-role="th">worst radius</th>
+<th data-quarto-table-cell-role="th">worst texture</th>
+<th data-quarto-table-cell-role="th">worst perimeter</th>
+<th data-quarto-table-cell-role="th">worst area</th>
+<th data-quarto-table-cell-role="th">worst smoothness</th>
+<th data-quarto-table-cell-role="th">worst compactness</th>
+<th data-quarto-table-cell-role="th">worst concavity</th>
+<th data-quarto-table-cell-role="th">worst concave points</th>
+<th data-quarto-table-cell-role="th">worst symmetry</th>
+<th data-quarto-table-cell-role="th">worst fractal dimension</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>17.99</td>
+<td>10.38</td>
+<td>122.80</td>
+<td>1001.0</td>
+<td>0.11840</td>
+<td>0.27760</td>
+<td>0.30010</td>
+<td>0.14710</td>
+<td>0.2419</td>
+<td>0.07871</td>
+<td>...</td>
+<td>25.380</td>
+<td>17.33</td>
+<td>184.60</td>
+<td>2019.0</td>
+<td>0.16220</td>
+<td>0.66560</td>
+<td>0.7119</td>
+<td>0.2654</td>
+<td>0.4601</td>
+<td>0.11890</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>20.57</td>
+<td>17.77</td>
+<td>132.90</td>
+<td>1326.0</td>
+<td>0.08474</td>
+<td>0.07864</td>
+<td>0.08690</td>
+<td>0.07017</td>
+<td>0.1812</td>
+<td>0.05667</td>
+<td>...</td>
+<td>24.990</td>
+<td>23.41</td>
+<td>158.80</td>
+<td>1956.0</td>
+<td>0.12380</td>
+<td>0.18660</td>
+<td>0.2416</td>
+<td>0.1860</td>
+<td>0.2750</td>
+<td>0.08902</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>19.69</td>
+<td>21.25</td>
+<td>130.00</td>
+<td>1203.0</td>
+<td>0.10960</td>
+<td>0.15990</td>
+<td>0.19740</td>
+<td>0.12790</td>
+<td>0.2069</td>
+<td>0.05999</td>
+<td>...</td>
+<td>23.570</td>
+<td>25.53</td>
+<td>152.50</td>
+<td>1709.0</td>
+<td>0.14440</td>
+<td>0.42450</td>
+<td>0.4504</td>
+<td>0.2430</td>
+<td>0.3613</td>
+<td>0.08758</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>11.42</td>
+<td>20.38</td>
+<td>77.58</td>
+<td>386.1</td>
+<td>0.14250</td>
+<td>0.28390</td>
+<td>0.24140</td>
+<td>0.10520</td>
+<td>0.2597</td>
+<td>0.09744</td>
+<td>...</td>
+<td>14.910</td>
+<td>26.50</td>
+<td>98.87</td>
+<td>567.7</td>
+<td>0.20980</td>
+<td>0.86630</td>
+<td>0.6869</td>
+<td>0.2575</td>
+<td>0.6638</td>
+<td>0.17300</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>20.29</td>
+<td>14.34</td>
+<td>135.10</td>
+<td>1297.0</td>
+<td>0.10030</td>
+<td>0.13280</td>
+<td>0.19800</td>
+<td>0.10430</td>
+<td>0.1809</td>
+<td>0.05883</td>
+<td>...</td>
+<td>22.540</td>
+<td>16.67</td>
+<td>152.20</td>
+<td>1575.0</td>
+<td>0.13740</td>
+<td>0.20500</td>
+<td>0.4000</td>
+<td>0.1625</td>
+<td>0.2364</td>
+<td>0.07678</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">564</td>
+<td>21.56</td>
+<td>22.39</td>
+<td>142.00</td>
+<td>1479.0</td>
+<td>0.11100</td>
+<td>0.11590</td>
+<td>0.24390</td>
+<td>0.13890</td>
+<td>0.1726</td>
+<td>0.05623</td>
+<td>...</td>
+<td>25.450</td>
+<td>26.40</td>
+<td>166.10</td>
+<td>2027.0</td>
+<td>0.14100</td>
+<td>0.21130</td>
+<td>0.4107</td>
+<td>0.2216</td>
+<td>0.2060</td>
+<td>0.07115</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">565</td>
+<td>20.13</td>
+<td>28.25</td>
+<td>131.20</td>
+<td>1261.0</td>
+<td>0.09780</td>
+<td>0.10340</td>
+<td>0.14400</td>
+<td>0.09791</td>
+<td>0.1752</td>
+<td>0.05533</td>
+<td>...</td>
+<td>23.690</td>
+<td>38.25</td>
+<td>155.00</td>
+<td>1731.0</td>
+<td>0.11660</td>
+<td>0.19220</td>
+<td>0.3215</td>
+<td>0.1628</td>
+<td>0.2572</td>
+<td>0.06637</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">566</td>
+<td>16.60</td>
+<td>28.08</td>
+<td>108.30</td>
+<td>858.1</td>
+<td>0.08455</td>
+<td>0.10230</td>
+<td>0.09251</td>
+<td>0.05302</td>
+<td>0.1590</td>
+<td>0.05648</td>
+<td>...</td>
+<td>18.980</td>
+<td>34.12</td>
+<td>126.70</td>
+<td>1124.0</td>
+<td>0.11390</td>
+<td>0.30940</td>
+<td>0.3403</td>
+<td>0.1418</td>
+<td>0.2218</td>
+<td>0.07820</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">567</td>
+<td>20.60</td>
+<td>29.33</td>
+<td>140.10</td>
+<td>1265.0</td>
+<td>0.11780</td>
+<td>0.27700</td>
+<td>0.35140</td>
+<td>0.15200</td>
+<td>0.2397</td>
+<td>0.07016</td>
+<td>...</td>
+<td>25.740</td>
+<td>39.42</td>
+<td>184.60</td>
+<td>1821.0</td>
+<td>0.16500</td>
+<td>0.86810</td>
+<td>0.9387</td>
+<td>0.2650</td>
+<td>0.4087</td>
+<td>0.12400</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">568</td>
+<td>7.76</td>
+<td>24.54</td>
+<td>47.92</td>
+<td>181.0</td>
+<td>0.05263</td>
+<td>0.04362</td>
+<td>0.00000</td>
+<td>0.00000</td>
+<td>0.1587</td>
+<td>0.05884</td>
+<td>...</td>
+<td>9.456</td>
+<td>30.37</td>
+<td>59.16</td>
+<td>268.6</td>
+<td>0.08996</td>
+<td>0.06444</td>
+<td>0.0000</td>
+<td>0.0000</td>
+<td>0.2871</td>
+<td>0.07039</td>
+</tr>
+</tbody>
+</table>
+
+<p>569 rows × 30 columns</p>
+</div>
+</div>
+</div>
+<div id="cell-26" class="cell" data-execution_count="23">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html#sklearn.tree.DecisionTreeClassifier.score"><code>DecisionTreeClassifier.score(X_test, y_test)</code></a> : 주어진 테스트 데이터에 대해 accuracy를 반환</p>
+<div id="cell-28" class="cell" data-execution_count="24">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 트리 하나를 이용</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeClassifier</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>base_tree <span class="op">=</span> DecisionTreeClassifier(random_state<span class="op">=</span><span class="dv">1</span>).fit(X_train, y_train)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>base_tree.score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="24">
+<pre><code>0.9370629370629371</code></pre>
+</div>
+</div>
+<div id="cell-29" class="cell" data-execution_count="25">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> tree </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-30" class="cell" data-scrolled="true" data-execution_count="29">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>plt.figure(figsize<span class="op">=</span>(<span class="dv">12</span>,<span class="dv">12</span>))  <span class="co"># set plot size (denoted in inches)</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>tree.plot_tree(base_tree, fontsize<span class="op">=</span><span class="dv">10</span>, feature_names<span class="op">=</span>raw_cancer[<span class="st">'feature_names'</span>].tolist())</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="09. Bagging_files/figure-html/cell-17-output-1.png" class="img-fluid figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<section id="sklearn.ensemble.baggingclassifier" class="level4" data-number="9.2.2.1">
+<h4 data-number="9.2.2.1" class="anchored" data-anchor-id="sklearn.ensemble.baggingclassifier"><span class="header-section-number">9.2.2.1</span> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingClassifier.html"><code>sklearn.ensemble.BaggingClassifier</code></a></h4>
+<p>Scikit-learn에서 분류 문제에 bagging을 사용하는 방법.</p>
+<p>각각의 bootstrap 샘플링된 데이터셋에서 학습된 base learner들을 결합하여 strong learner를 만드는 방법으로, default로 decision Tree를 사용하나 다른 분류기도 가능하다.</p>
+<ul>
+<li><code>base_estimator</code> : 기본 추정기, <code>None</code>이면 기본 추정기는 DecisionTreeClassifier.
+<ul>
+<li>Tree를 이용할 시, 일반적으로 가지치기를 하지 않은 full tree를 이용한다.</li>
+</ul></li>
+<li><code>n_estimators</code> : ensemble에 사용할 기본 추정기의 숫자. default=10</li>
+<li><code>max_samples</code> : 각 부트스트랩에서 뽑아내는 샘플의 수. default=1.0 (100%)</li>
+<li><code>oob_score</code> : out-of-bag error를 추정할 것인지 결정하는 boolean 값.</li>
+</ul>
+<p>Tree의 숫자 10개를 이용한 bagging</p>
+<div id="cell-33" class="cell" data-execution_count="30">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> BaggingClassifier</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>clf <span class="op">=</span> BaggingClassifier(estimator<span class="op">=</span>DecisionTreeClassifier(), random_state<span class="op">=</span><span class="dv">1</span>).fit(X_train,y_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>.score()</code> method를 이용하여 accuracy 측정</p>
+<div id="cell-35" class="cell" data-execution_count="31">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>clf.score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="31">
+<pre><code>0.972027972027972</code></pre>
+</div>
+</div>
+<p>Tree의 숫자 20개</p>
+<div id="cell-37" class="cell" data-execution_count="32">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>BaggingClassifier(estimator<span class="op">=</span>DecisionTreeClassifier(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">20</span>)<span class="op">\</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>.fit(X_train,y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="32">
+<pre><code>0.951048951048951</code></pre>
+</div>
+</div>
+<p>Tree의 숫자 50개</p>
+<div id="cell-39" class="cell" data-execution_count="33">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>BaggingClassifier(estimator<span class="op">=</span>DecisionTreeClassifier(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">50</span>)<span class="op">\</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>.fit(X_train,y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="33">
+<pre><code>0.9790209790209791</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="out-of-bag-error" class="level3" data-number="9.2.3">
+<h3 data-number="9.2.3" class="anchored" data-anchor-id="out-of-bag-error"><span class="header-section-number">9.2.3</span> Out-of-bag error</h3>
+<p>Bagging은 test 에러 혹은 test 성능을 추정할 수 있는 독특한 방법이 있다.</p>
+<p>Bootstrap은 중복 추출이라 이 과정에서 일부의 데이터 (대략 2/3)는 자연스럽게 훈련 데이터가 되고 나머지는 훈련에 사용하지 않게 된다.</p>
+<p>따라서 훈련에 사용되지 않은 out-of-bag (OOB) 데이터를 이용해 테스트 성능을 시험해 볼 수 있다.</p>
+<p>관찰값 입장에서 보면 <span class="math inline">\(i\)</span>번째 관찰값은 대략 B/3회 정도 테스트에 참여하게 된다.</p>
+<ul>
+<li><span class="math inline">\(i\)</span>번째 관찰값은 각 bootstrap 샘플에 포함되지 않을 확률이 약 <span class="math inline">\(1 - \left(1 - \frac{1}{n}\right)^n \approx \frac{1}{3}\)</span> 이므로, 전체 <span class="math inline">\(B\)</span>개의 모델 중 약 <span class="math inline">\(B/3\)</span>개에서 OOB 테스트에 사용된다.</li>
+</ul>
+<p>예를 들어, classification의 경우 테스트에 참여한 관찰값들의 다수결 투표를 통하여 예측값을 정하고, 실제 <span class="math inline">\(y\)</span>값과 비교하여 테스트 에러를 추정할 수 있다.</p>
+<p>정리하면 다음과 같다.</p>
+<ul>
+<li>원 데이터로부터 <span class="math inline">\(B\)</span>번 부트스트랩 샘플링을 하여, 각, 부트스트랩 샘플에 트리를 적합한다. (총 <span class="math inline">\(B\)</span>개의 트리 생성됨)</li>
+<li>각 관찰값에 대해 해당 관찰값이 훈련에 포함되지 않은 모델들만 이용하여, 예측을 진행한다.</li>
+<li>이 과정을 거치게 되면, 원 데이터의 하나의 샘플 당 여러 번의 out-of-bag 예측이 이루어질 수 있는데, 분류 문제의 경우 투표, 회귀는 평균을 취하여 예측값을 정한다.</li>
+<li>이 예측값과 실제 <span class="math inline">\(y\)</span>값과 비교한다.</li>
+<li>모든 관찰값에 대해 적용하여 에러를 추정한다.</li>
+</ul>
+<p>OOB error를 이용하여 테스트 에러를 추정할 경우, cross-validation이나 validation set approach를 수행하지 않아도 될 수 있다.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Tree #</th>
+<th>Bootstrap Sample (학습 데이터)</th>
+<th>OOB Sample (테스트에 사용)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Tree 1</td>
+<td>1, 2, 5, 6, 8, 8, 9</td>
+<td>3, 4, 7, 10</td>
+</tr>
+<tr class="even">
+<td>Tree 2</td>
+<td>2, 3, 3, 6, 7, 8, 10</td>
+<td>1, 4, 5, 9</td>
+</tr>
+<tr class="odd">
+<td>Tree 3</td>
+<td>1, 1, 2, 4, 5, 6, 9</td>
+<td>3, 7, 8, 10</td>
+</tr>
+<tr class="even">
+<td>Tree 4</td>
+<td>3, 4, 4, 7, 8, 9, 10</td>
+<td>1, 2, 5, 6</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><p>예를 들어 위와 같은 상황에서 1번 데이터는 Tree 2와 Tree 4에서 훈련에 참여하지 않았으므로, 훈련된 Tree 2와 Tree 4로 예측을 진행하여, 투표나 평균을 취한다.</p></li>
+<li><p>이 예측값을 실제 <span class="math inline">\(y_1\)</span>값과 비교한다.</p></li>
+<li><p>비슷하게 2번 데이터는 Tree 4에 대해 예측을 진행하고, 3, 4, …, 10번 데이터에 대해 동일한 방법을 적용한다.</p></li>
+<li><p>모든 관찰값에 대해 예측 진행 후 에러를 계산한다. |</p></li>
+</ul>
+<section id="oob-vs-k-fold-cross-validation" class="level4" data-number="9.2.3.1">
+<h4 data-number="9.2.3.1" class="anchored" data-anchor-id="oob-vs-k-fold-cross-validation"><span class="header-section-number">9.2.3.1</span> OOB vs K-fold Cross-Validation</h4>
+<ul>
+<li><p>OOB Error</p>
+<ul>
+<li>Bagging 과정 내에서 자동으로 얻을 수 있음</li>
+<li>별도의 검증 세트를 만들 필요 없어, 계산 효율적</li>
+<li>성능의 대략적인 추정을 빠르게 얻을 수 있음</li>
+</ul></li>
+<li><p>K-Fold CV</p>
+<ul>
+<li>일반적으로 더 정밀한 성능 평가 가능</li>
+<li>모델 재학습을 여러 번 수행해야 하므로 계산 비용이 높음</li>
+<li>Bagging 외의 모델 평가에 일반적으로 사용됨</li>
+</ul></li>
+</ul>
+</section>
+<section id="oob-에러-계산" class="level4" data-number="9.2.3.2">
+<h4 data-number="9.2.3.2" class="anchored" data-anchor-id="oob-에러-계산"><span class="header-section-number">9.2.3.2</span> OOB 에러 계산</h4>
+<p>위에서 언급한 out-of-bag error를 계산하기 위해서는 <code>oob_score = True</code>로 설정한다.</p>
+<p>이 때는 training과 test셋을 따로 구분할 필요없이 전체를 훈련을 위한 <code>.fit()</code>의 인자로 전달한다.</p>
+<p>계산된 값은 <code>oob_score_</code>를 통해 확인하는데, out-of-bag sample을 통해 정확하게 분류된 비율을 뜻한다.</p>
+<ul>
+<li>OOB error을 계산하려면 <code>1-oob_score_</code>를 계산</li>
+</ul>
+<div id="cell-44" class="cell" data-execution_count="34">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>bc <span class="op">=</span> BaggingClassifier(estimator<span class="op">=</span>DecisionTreeClassifier(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">20</span>, oob_score <span class="op">=</span> <span class="va">True</span>).fit(X,y)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>bc.oob_score_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="34">
+<pre><code>0.9525483304042179</code></pre>
+</div>
+</div>
+<p>아래 코드에서 <code>.estimators_samples_</code>는 BaggingClassifier의 Bootstrap으로 선택된 훈련 샘플들의 인덱스 리스트이다.</p>
+<p>또한 <code>.estimators_</code>는 훈련된 트리들을 담고 있기 때문에, 이를 이용하여 <code>oob_score_</code>를 계산하는 과정을 재현해 볼 수 있다.</p>
+<div id="cell-46" class="cell" data-execution_count="35">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>ys_pred <span class="op">=</span> np.full((X.shape[<span class="dv">0</span>], bc.n_estimators), np.nan)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, train_idxs <span class="kw">in</span> <span class="bu">enumerate</span>(bc.estimators_samples_):</span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>    oob_idxs <span class="op">=</span> np.setdiff1d(np.arange(X.shape[<span class="dv">0</span>]), train_idxs)  <span class="co"># OOB 셋들의 인덱스 구하기</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    X_oob <span class="op">=</span> X[oob_idxs]</span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a>    y_pred_i <span class="op">=</span> bc.estimators_[i].predict(X_oob)  <span class="co"># 훈련된 트리로 예측</span></span>
+<span id="cb32-12"><a href="#cb32-12" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb32-13"><a href="#cb32-13" aria-hidden="true" tabindex="-1"></a>    ys_pred[oob_idxs, i] <span class="op">=</span> y_pred_i <span class="co"># 추후에 다수결 결정을 내기 위해 저장</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>아래 표에서 행은 각 데이터의 index를 나타내고, 열들은 각 bootstrap의 회차를 나타낸다. - 총 20회의 bootstrap을 통해, 새로운 데이터 셋이 형성되었고, 각 데이터 셋에 대해 tree를 적합한 후, 훈련에 참여하지 않은 OOB 데이터에 대해서만 예측을 진행하였다.</p>
+<ul>
+<li>즉, 행은 데이터 번호이고, 열은 Tree 번호라고 생각하면 된다.</li>
+</ul>
+<div id="cell-48" class="cell" data-execution_count="36">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ys_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="36">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+<th data-quarto-table-cell-role="th">2</th>
+<th data-quarto-table-cell-role="th">3</th>
+<th data-quarto-table-cell-role="th">4</th>
+<th data-quarto-table-cell-role="th">5</th>
+<th data-quarto-table-cell-role="th">6</th>
+<th data-quarto-table-cell-role="th">7</th>
+<th data-quarto-table-cell-role="th">8</th>
+<th data-quarto-table-cell-role="th">9</th>
+<th data-quarto-table-cell-role="th">10</th>
+<th data-quarto-table-cell-role="th">11</th>
+<th data-quarto-table-cell-role="th">12</th>
+<th data-quarto-table-cell-role="th">13</th>
+<th data-quarto-table-cell-role="th">14</th>
+<th data-quarto-table-cell-role="th">15</th>
+<th data-quarto-table-cell-role="th">16</th>
+<th data-quarto-table-cell-role="th">17</th>
+<th data-quarto-table-cell-role="th">18</th>
+<th data-quarto-table-cell-role="th">19</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.0</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">564</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">565</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">566</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>0.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">567</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>0.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">568</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1.0</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+
+<p>569 rows × 20 columns</p>
+</div>
+</div>
+</div>
+<p>이 결과를 통해, 이제 oob score를 직접 계산해 보자.</p>
+<div id="cell-50" class="cell" data-execution_count="37">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>y_pred_oob <span class="op">=</span> []</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> row <span class="kw">in</span> ys_pred:</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    row_no_nan <span class="op">=</span> row[<span class="op">~</span>np.isnan(row)].astype(<span class="bu">int</span>)  <span class="co"># nan을 제외한 값들로 이루어진 배열</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    y_pred_oob.append(np.bincount(row_no_nan).argmax()) <span class="co"># 가장 많이 등장한 클래스 결정</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>accuracy_score(y, y_pred_oob)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="37">
+<pre><code>0.9525483304042179</code></pre>
+</div>
+</div>
+<p><code>BaggingClassifier</code>에서 제공하는 <code>oob_score_</code>와 동일하다.</p>
+<div id="cell-52" class="cell" data-execution_count="38">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>BaggingClassifier(estimator<span class="op">=</span>DecisionTreeClassifier(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">50</span>, oob_score <span class="op">=</span> <span class="va">True</span>).fit(X,y).oob_score_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="38">
+<pre><code>0.9525483304042179</code></pre>
+</div>
+</div>
+</section>
+<section id="다른-base-estimator를-이용한-bagging" class="level4" data-number="9.2.3.3">
+<h4 data-number="9.2.3.3" class="anchored" data-anchor-id="다른-base-estimator를-이용한-bagging"><span class="header-section-number">9.2.3.3</span> 다른 base estimator를 이용한 bagging</h4>
+<p>다른 base estimator를 이용한 bagging도 가능하다. 아래 코드에서는 간단히 로지스틱 회귀를 base estimator로 사용하였다.</p>
+<div id="cell-54" class="cell" data-execution_count="39">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>BaggingClassifier(LogisticRegression(solver<span class="op">=</span><span class="st">'liblinear'</span>), n_estimators<span class="op">=</span><span class="dv">50</span>, oob_score<span class="op">=</span><span class="va">True</span>, random_state<span class="op">=</span><span class="dv">1</span>).fit(X,y).oob_score_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="39">
+<pre><code>0.9507908611599297</code></pre>
+</div>
+</div>
+</section>
+<section id="실제-데이터를-이용한-예제" class="level4" data-number="9.2.3.4">
+<h4 data-number="9.2.3.4" class="anchored" data-anchor-id="실제-데이터를-이용한-예제"><span class="header-section-number">9.2.3.4</span> 실제 데이터를 이용한 예제</h4>
+<p><a href="https://archive.ics.uci.edu/ml/datasets/Bike+Sharing+Dataset">Bike Sharing Dataset</a> 데이터를 이용하여 <code>cnt</code>를 예측하는 regression 예제</p>
+<div id="cell-56" class="cell" data-execution_count="40">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>url <span class="op">=</span> <span class="st">"https://media.githubusercontent.com/media/PacktPublishing/Hands-On-Gradient-Boosting-with-XGBoost-and-Scikit-learn/master/Chapter01/bike_rentals_cleaned.csv"</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.read_csv(url)</span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="40">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">instant</th>
+<th data-quarto-table-cell-role="th">season</th>
+<th data-quarto-table-cell-role="th">yr</th>
+<th data-quarto-table-cell-role="th">mnth</th>
+<th data-quarto-table-cell-role="th">holiday</th>
+<th data-quarto-table-cell-role="th">weekday</th>
+<th data-quarto-table-cell-role="th">workingday</th>
+<th data-quarto-table-cell-role="th">weathersit</th>
+<th data-quarto-table-cell-role="th">temp</th>
+<th data-quarto-table-cell-role="th">atemp</th>
+<th data-quarto-table-cell-role="th">hum</th>
+<th data-quarto-table-cell-role="th">windspeed</th>
+<th data-quarto-table-cell-role="th">cnt</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>1</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>1</td>
+<td>0.0</td>
+<td>6.0</td>
+<td>0.0</td>
+<td>2</td>
+<td>0.344167</td>
+<td>0.363625</td>
+<td>0.805833</td>
+<td>0.160446</td>
+<td>985</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>2</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>1</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>2</td>
+<td>0.363478</td>
+<td>0.353739</td>
+<td>0.696087</td>
+<td>0.248539</td>
+<td>801</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>3</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>1</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>1</td>
+<td>0.196364</td>
+<td>0.189405</td>
+<td>0.437273</td>
+<td>0.248309</td>
+<td>1349</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>4</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>1</td>
+<td>0.0</td>
+<td>2.0</td>
+<td>1.0</td>
+<td>1</td>
+<td>0.200000</td>
+<td>0.212122</td>
+<td>0.590435</td>
+<td>0.160296</td>
+<td>1562</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>5</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>1</td>
+<td>0.0</td>
+<td>3.0</td>
+<td>1.0</td>
+<td>1</td>
+<td>0.226957</td>
+<td>0.229270</td>
+<td>0.436957</td>
+<td>0.186900</td>
+<td>1600</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">726</td>
+<td>727</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>12</td>
+<td>0.0</td>
+<td>4.0</td>
+<td>1.0</td>
+<td>2</td>
+<td>0.254167</td>
+<td>0.226642</td>
+<td>0.652917</td>
+<td>0.350133</td>
+<td>2114</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">727</td>
+<td>728</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>12</td>
+<td>0.0</td>
+<td>5.0</td>
+<td>1.0</td>
+<td>2</td>
+<td>0.253333</td>
+<td>0.255046</td>
+<td>0.590000</td>
+<td>0.155471</td>
+<td>3095</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">728</td>
+<td>729</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>12</td>
+<td>0.0</td>
+<td>6.0</td>
+<td>0.0</td>
+<td>2</td>
+<td>0.253333</td>
+<td>0.242400</td>
+<td>0.752917</td>
+<td>0.124383</td>
+<td>1341</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">729</td>
+<td>730</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>12</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>0.0</td>
+<td>1</td>
+<td>0.255833</td>
+<td>0.231700</td>
+<td>0.483333</td>
+<td>0.350754</td>
+<td>1796</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">730</td>
+<td>731</td>
+<td>1.0</td>
+<td>1.0</td>
+<td>12</td>
+<td>0.0</td>
+<td>1.0</td>
+<td>0.0</td>
+<td>2</td>
+<td>0.215833</td>
+<td>0.223487</td>
+<td>0.577500</td>
+<td>0.154846</td>
+<td>2729</td>
+</tr>
+</tbody>
+</table>
+
+<p>731 rows × 13 columns</p>
+</div>
+</div>
+</div>
+<div id="cell-57" class="cell" data-execution_count="41">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> df.loc[:,<span class="st">"season"</span>:<span class="st">"windspeed"</span>]</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> df.loc[:,<span class="st">"cnt"</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-58" class="cell" data-execution_count="42">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html"><code>sklearn.ensemble.BaggingRegressor</code></a>로 regressor들을 bagging하여 만들어 보자.</p>
+<p>이용할 base estimator는 <code>DecisionTreeRegressor</code>이다.</p>
+<div id="cell-60" class="cell" data-execution_count="43">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> BaggingRegressor</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeRegressor</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div id="cell-61" class="cell" data-execution_count="44">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>DecisionTreeRegressor(random_state<span class="op">=</span><span class="dv">1</span>).fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="44">
+<pre><code>0.6742766782080538</code></pre>
+</div>
+</div>
+<p><code>n_estimator</code>의 값을 조정하여 weak learner들의 숫자, 즉, 몇 번 bootstrap할 것인지 정한다.</p>
+<p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.BaggingRegressor.html#sklearn.ensemble.BaggingRegressor.score"><code>.score()</code></a> method는 <a href="https://scikit-learn.org/stable/modules/generated/sklearn.metrics.r2_score.html"><code>sklearn.metrics.r2_score()</code></a> 함수를 사용하여 회귀 모델의 결정 계수(R-squared)를 계산한다.</p>
+<p>R-squared는 회귀 모델의 적합도를 나타내는 지표로, 최대 1까지의 값을 가지며 높을수록 모델이 데이터에 더 잘 적합되었다는 의미이다.</p>
+<p><span class="math display">\[ R^2 = 1 - \frac{\sum_{i=1}^{n} (y_{\text{true}}^{(i)} - y_{\text{pred}}^{(i)})^2}{\sum_{i=1}^{n} (y_{\text{true}}^{(i)} - \bar{y}_{\text{true}})^2} \]</span></p>
+<div id="cell-63" class="cell" data-execution_count="45">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>br1 <span class="op">=</span> BaggingRegressor(estimator<span class="op">=</span>DecisionTreeRegressor(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">1</span>).fit(X_train, y_train)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>br1.score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="45">
+<pre><code>0.6878266786748435</code></pre>
+</div>
+</div>
+<div id="cell-64" class="cell" data-execution_count="46">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>r2_score(y_test, br1.predict(X_test))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="46">
+<pre><code>0.6878266786748435</code></pre>
+</div>
+</div>
+<div id="cell-65" class="cell" data-execution_count="47">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>BaggingRegressor(estimator<span class="op">=</span>DecisionTreeRegressor(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">5</span>)<span class="op">\</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="47">
+<pre><code>0.8064553047927325</code></pre>
+</div>
+</div>
+<div id="cell-66" class="cell" data-execution_count="48">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>BaggingRegressor(estimator<span class="op">=</span>DecisionTreeRegressor(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">10</span>)<span class="op">\</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="48">
+<pre><code>0.8148809175426628</code></pre>
+</div>
+</div>
+<div id="cell-67" class="cell" data-execution_count="49">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>BaggingRegressor(estimator<span class="op">=</span>DecisionTreeRegressor(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">50</span>)<span class="op">\</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>.fit(X_train, y_train).score(X_test, y_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="49">
+<pre><code>0.8277392650405595</code></pre>
+</div>
+</div>
+<p><code>BagginRegressor</code>는 <code>oob_score_</code>를 계산하는데 있어 마찬가지로 <span class="math inline">\(R^2\)</span>를 이용한다.</p>
+<p>분류 문제와 마찬가지로 각 부트스트랩별 OOB sample에 대해 적합된 트리로 <span class="math inline">\(y\)</span>의 예측값을 계산하고, 여러 개 있을 경우, 평균을 취한다.</p>
+<p>이렇게 계산된 예측값과 실제 <span class="math inline">\(y\)</span>값으로 <span class="math inline">\(R^2\)</span>를 계산한다.</p>
+<div id="cell-69" class="cell" data-execution_count="54">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>br <span class="op">=</span> BaggingRegressor(estimator<span class="op">=</span>DecisionTreeRegressor(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">20</span>, oob_score <span class="op">=</span> <span class="va">True</span>).fit(X, y)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>br.oob_score_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="54">
+<pre><code>0.8701892077807885</code></pre>
+</div>
+</div>
+<p>분류 문제와 비슷하게 <code>.estimators_samples_</code>는 BaggingRegressor의 Bootstrap으로 선택된 훈련 샘플들의 인덱스 리스트이다.</p>
+<p>또한 <code>.estimators_</code>는 훈련된 트리들을 담고 있기 때문에, 이를 이용하여 <code>oob_score_</code>를 계산하는 과정을 재현해 볼 수 있다.</p>
+<div id="cell-71" class="cell" data-execution_count="56">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>ys_pred <span class="op">=</span> np.full((X.shape[<span class="dv">0</span>], br.n_estimators), np.nan)</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, train_idxs <span class="kw">in</span> <span class="bu">enumerate</span>(br.estimators_samples_):</span>
+<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-8"><a href="#cb58-8" aria-hidden="true" tabindex="-1"></a>    oob_idxs <span class="op">=</span> np.setdiff1d(np.arange(X.shape[<span class="dv">0</span>]), train_idxs)  <span class="co"># OOB 셋들의 인덱스 구하기</span></span>
+<span id="cb58-9"><a href="#cb58-9" aria-hidden="true" tabindex="-1"></a>        </span>
+<span id="cb58-10"><a href="#cb58-10" aria-hidden="true" tabindex="-1"></a>    X_oob <span class="op">=</span> X.loc[oob_idxs].values</span>
+<span id="cb58-11"><a href="#cb58-11" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-12"><a href="#cb58-12" aria-hidden="true" tabindex="-1"></a>    y_pred_i <span class="op">=</span> br.estimators_[i].predict(X_oob)  <span class="co"># 훈련된 트리로 예측</span></span>
+<span id="cb58-13"><a href="#cb58-13" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-14"><a href="#cb58-14" aria-hidden="true" tabindex="-1"></a>    ys_pred[oob_idxs, i] <span class="op">=</span> y_pred_i <span class="co"># 추후에 평균을 내기 위해 저장</span></span>
+<span id="cb58-15"><a href="#cb58-15" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-16"><a href="#cb58-16" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb58-17"><a href="#cb58-17" aria-hidden="true" tabindex="-1"></a>pd.DataFrame(ys_pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="56">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">0</th>
+<th data-quarto-table-cell-role="th">1</th>
+<th data-quarto-table-cell-role="th">2</th>
+<th data-quarto-table-cell-role="th">3</th>
+<th data-quarto-table-cell-role="th">4</th>
+<th data-quarto-table-cell-role="th">5</th>
+<th data-quarto-table-cell-role="th">6</th>
+<th data-quarto-table-cell-role="th">7</th>
+<th data-quarto-table-cell-role="th">8</th>
+<th data-quarto-table-cell-role="th">9</th>
+<th data-quarto-table-cell-role="th">10</th>
+<th data-quarto-table-cell-role="th">11</th>
+<th data-quarto-table-cell-role="th">12</th>
+<th data-quarto-table-cell-role="th">13</th>
+<th data-quarto-table-cell-role="th">14</th>
+<th data-quarto-table-cell-role="th">15</th>
+<th data-quarto-table-cell-role="th">16</th>
+<th data-quarto-table-cell-role="th">17</th>
+<th data-quarto-table-cell-role="th">18</th>
+<th data-quarto-table-cell-role="th">19</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">0</td>
+<td>NaN</td>
+<td>1650.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1807.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1011.0</td>
+<td>2192.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2077.0</td>
+<td>801.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">1</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>985.0</td>
+<td>NaN</td>
+<td>985.0</td>
+<td>NaN</td>
+<td>1446.0</td>
+<td>NaN</td>
+<td>985.0</td>
+<td>NaN</td>
+<td>2402.0</td>
+<td>NaN</td>
+<td>985.0</td>
+<td>985.0</td>
+<td>1795.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>754.0</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">2</td>
+<td>1501.0</td>
+<td>NaN</td>
+<td>1562.0</td>
+<td>1501.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1321.0</td>
+<td>1600.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1501.0</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">3</td>
+<td>1606.0</td>
+<td>1927.0</td>
+<td>NaN</td>
+<td>1600.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1985.0</td>
+<td>1263.0</td>
+<td>1600.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1416.0</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">4</td>
+<td>1606.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1606.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1650.0</td>
+<td>1606.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1815.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1985.0</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">726</td>
+<td>1749.0</td>
+<td>NaN</td>
+<td>1796.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1796.0</td>
+<td>1796.0</td>
+<td>5375.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>3333.0</td>
+<td>NaN</td>
+<td>2802.0</td>
+<td>NaN</td>
+<td>2689.0</td>
+<td>3956.0</td>
+<td>NaN</td>
+<td>3292.0</td>
+<td>3333.0</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">727</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1341.0</td>
+<td>2729.0</td>
+<td>5375.0</td>
+<td>NaN</td>
+<td>1787.0</td>
+<td>2376.0</td>
+<td>NaN</td>
+<td>2802.0</td>
+<td>NaN</td>
+<td>2729.0</td>
+<td>3956.0</td>
+<td>3272.0</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">728</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2832.0</td>
+<td>1013.0</td>
+<td>NaN</td>
+<td>441.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2493.0</td>
+<td>NaN</td>
+<td>2729.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2832.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2298.0</td>
+<td>NaN</td>
+</tr>
+<tr class="even">
+<td data-quarto-table-cell-role="th">729</td>
+<td>1749.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>1749.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2114.0</td>
+<td>2277.0</td>
+<td>3956.0</td>
+<td>NaN</td>
+<td>2689.0</td>
+<td>3214.0</td>
+<td>3956.0</td>
+<td>2114.0</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<td data-quarto-table-cell-role="th">730</td>
+<td>3422.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2114.0</td>
+<td>NaN</td>
+<td>920.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>3292.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2169.0</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>NaN</td>
+<td>2298.0</td>
+<td>1341.0</td>
+</tr>
+</tbody>
+</table>
+
+<p>731 rows × 20 columns</p>
+</div>
+</div>
+</div>
+<div id="cell-72" class="cell" data-execution_count="57">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>y_pred_oob <span class="op">=</span> np.nanmean(ys_pred, axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>r2_score(y, y_pred_oob)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="57">
+<pre><code>0.8701892077807885</code></pre>
+</div>
+</div>
+<div id="cell-73" class="cell" data-execution_count="58">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>BaggingRegressor(estimator<span class="op">=</span>DecisionTreeRegressor(), random_state<span class="op">=</span><span class="dv">1</span>, n_estimators<span class="op">=</span><span class="dv">50</span>, oob_score <span class="op">=</span> <span class="va">True</span>).fit(X, y).oob_score_</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="58">
+<pre><code>0.8778193144433839</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./08. Tree.html" class="pagination-link" aria-label="Tree-based method">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree-based method</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./10. Random forest.html" class="pagination-link" aria-label="Random forest">
+        <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Random forest</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+</body></html>
