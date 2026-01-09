@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>11&nbsp; Boosting – Statistical Machine Learning</title>
+<title>12&nbsp; Boosting – Statistical Machine Learning</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./12. XGBoost.html" rel="next">
-<link href="./10. Random forest.html" rel="prev">
+<link href="./13. XGBoost.html" rel="next">
+<link href="./11. Random forest.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -147,7 +147,7 @@ window.Quarto = {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./11. Boosting.html"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Boosting</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./12. Boosting.html"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Boosting</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -228,44 +228,50 @@ window.Quarto = {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./09. Bagging.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">앙상블 기법</span></span></a>
+  <a href="./09. Prunning tree.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">가지치기</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./10. Random forest.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Random forest</span></span></a>
+  <a href="./10. Bagging.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">앙상블 기법</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./11. Boosting.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Boosting</span></span></a>
+  <a href="./11. Random forest.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Random forest</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./12. XGBoost.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">XGBoost</span></span></a>
+  <a href="./12. Boosting.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Boosting</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./13. LightGBM.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">LightGBM</span></span></a>
+  <a href="./13. XGBoost.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">XGBoost</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./14. Unsupervised.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Unsupervised vs Supervised Learning</span></span></a>
+  <a href="./14. LightGBM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">LightGBM</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./15. SVM.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Support vector machine</span></span></a>
+  <a href="./15. Unsupervised.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">15</span>&nbsp; <span class="chapter-title">Unsupervised vs Supervised Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./16. SVM.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">16</span>&nbsp; <span class="chapter-title">Support vector machine</span></span></a>
   </div>
 </li>
     </ul>
@@ -278,21 +284,23 @@ window.Quarto = {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요"><span class="header-section-number">11.1</span> 개요</a></li>
-  <li><a href="#adaboost" id="toc-adaboost" class="nav-link" data-scroll-target="#adaboost"><span class="header-section-number">11.2</span> Adaboost</a>
+  <li><a href="#개요" id="toc-개요" class="nav-link active" data-scroll-target="#개요"><span class="header-section-number">12.1</span> 개요</a></li>
+  <li><a href="#adaboost" id="toc-adaboost" class="nav-link" data-scroll-target="#adaboost"><span class="header-section-number">12.2</span> Adaboost</a>
   <ul class="collapse">
-  <li><a href="#훈련" id="toc-훈련" class="nav-link" data-scroll-target="#훈련"><span class="header-section-number">11.2.1</span> 훈련</a></li>
-  <li><a href="#예측" id="toc-예측" class="nav-link" data-scroll-target="#예측"><span class="header-section-number">11.2.2</span> 예측</a></li>
-  <li><a href="#예제" id="toc-예제" class="nav-link" data-scroll-target="#예제"><span class="header-section-number">11.2.3</span> 예제</a></li>
-  <li><a href="#another-example-the-elements-of-statistical-learning" id="toc-another-example-the-elements-of-statistical-learning" class="nav-link" data-scroll-target="#another-example-the-elements-of-statistical-learning"><span class="header-section-number">11.2.4</span> Another example : The elements of statistical learning</a></li>
+  <li><a href="#훈련" id="toc-훈련" class="nav-link" data-scroll-target="#훈련"><span class="header-section-number">12.2.1</span> 훈련</a></li>
+  <li><a href="#예측" id="toc-예측" class="nav-link" data-scroll-target="#예측"><span class="header-section-number">12.2.2</span> 예측</a></li>
+  <li><a href="#예제" id="toc-예제" class="nav-link" data-scroll-target="#예제"><span class="header-section-number">12.2.3</span> 예제</a></li>
+  <li><a href="#another-example-the-elements-of-statistical-learning" id="toc-another-example-the-elements-of-statistical-learning" class="nav-link" data-scroll-target="#another-example-the-elements-of-statistical-learning"><span class="header-section-number">12.2.4</span> Another example : The elements of statistical learning</a></li>
   </ul></li>
-  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link" data-scroll-target="#gradient-boosting"><span class="header-section-number">11.3</span> Gradient boosting</a>
+  <li><a href="#gradient-boosting" id="toc-gradient-boosting" class="nav-link" data-scroll-target="#gradient-boosting"><span class="header-section-number">12.3</span> Gradient boosting</a>
   <ul class="collapse">
-  <li><a href="#tree를-이용한-regression-boosting-설명" id="toc-tree를-이용한-regression-boosting-설명" class="nav-link" data-scroll-target="#tree를-이용한-regression-boosting-설명"><span class="header-section-number">11.3.1</span> Tree를 이용한 regression boosting 설명</a></li>
-  <li><a href="#왜-gradient-boosting인가" id="toc-왜-gradient-boosting인가" class="nav-link" data-scroll-target="#왜-gradient-boosting인가"><span class="header-section-number">11.3.2</span> 왜 gradient boosting인가?</a></li>
-  <li><a href="#분류-문제-gradient-boosting" id="toc-분류-문제-gradient-boosting" class="nav-link" data-scroll-target="#분류-문제-gradient-boosting"><span class="header-section-number">11.3.3</span> 분류 문제 gradient boosting</a></li>
-  <li><a href="#예제-이진-분류-문제" id="toc-예제-이진-분류-문제" class="nav-link" data-scroll-target="#예제-이진-분류-문제"><span class="header-section-number">11.3.4</span> 예제 : 이진 분류 문제</a></li>
-  <li><a href="#예제-iris-데이터---multi-class" id="toc-예제-iris-데이터---multi-class" class="nav-link" data-scroll-target="#예제-iris-데이터---multi-class"><span class="header-section-number">11.3.5</span> 예제 : Iris 데이터 - multi class</a></li>
+  <li><a href="#알고리즘" id="toc-알고리즘" class="nav-link" data-scroll-target="#알고리즘"><span class="header-section-number">12.3.1</span> 알고리즘</a></li>
+  <li><a href="#tree를-이용한-regression-boosting-설명" id="toc-tree를-이용한-regression-boosting-설명" class="nav-link" data-scroll-target="#tree를-이용한-regression-boosting-설명"><span class="header-section-number">12.3.2</span> Tree를 이용한 regression boosting 설명</a></li>
+  <li><a href="#sklearn.ensemble.gradientboostingregressor" id="toc-sklearn.ensemble.gradientboostingregressor" class="nav-link" data-scroll-target="#sklearn.ensemble.gradientboostingregressor"><span class="header-section-number">12.3.3</span> <code>sklearn.ensemble.GradientBoostingRegressor</code></a></li>
+  <li><a href="#왜-gradient-boosting인가" id="toc-왜-gradient-boosting인가" class="nav-link" data-scroll-target="#왜-gradient-boosting인가"><span class="header-section-number">12.3.4</span> 왜 gradient boosting인가?</a></li>
+  <li><a href="#gradient-boosting의-주요-구성-요소" id="toc-gradient-boosting의-주요-구성-요소" class="nav-link" data-scroll-target="#gradient-boosting의-주요-구성-요소"><span class="header-section-number">12.3.5</span> Gradient Boosting의 주요 구성 요소</a></li>
+  <li><a href="#분류-문제-gradient-boosting" id="toc-분류-문제-gradient-boosting" class="nav-link" data-scroll-target="#분류-문제-gradient-boosting"><span class="header-section-number">12.3.6</span> 분류 문제 gradient boosting</a></li>
+  <li><a href="#예제-iris-데이터---multi-class" id="toc-예제-iris-데이터---multi-class" class="nav-link" data-scroll-target="#예제-iris-데이터---multi-class"><span class="header-section-number">12.3.7</span> 예제 : Iris 데이터 - multi class</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -302,7 +310,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Boosting</span></h1>
+<h1 class="title"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Boosting</span></h1>
 </div>
 
 
@@ -320,8 +328,8 @@ window.Quarto = {
 
 
 <hr>
-<section id="개요" class="level2" data-number="11.1">
-<h2 data-number="11.1" class="anchored" data-anchor-id="개요"><span class="header-section-number">11.1</span> 개요</h2>
+<section id="개요" class="level2" data-number="12.1">
+<h2 data-number="12.1" class="anchored" data-anchor-id="개요"><span class="header-section-number">12.1</span> 개요</h2>
 <p>Boosting은 약한 학습기(weak learner)들을 결합하여 강한 학습기(strong learner)를 만드는 ensemble 방법론 중 하나이다.</p>
 <p>Boosting은 처음에는 각각의 데이터 포인트에 대해 동일한 가중치를 부여한 상태에서 학습을 시작한다.</p>
 <ul>
@@ -336,8 +344,8 @@ window.Quarto = {
 <p>각각의 약한 학습기들이 모여서 궁극적으로 높은 성능을 보인다.</p>
 <p>부스팅 (boosting)은 bagging과 마찬가지로 트리 모델만이 아닌 다른 일반적인 통계적 학습에도 적용할 수 있다.</p>
 </section>
-<section id="adaboost" class="level2" data-number="11.2">
-<h2 data-number="11.2" class="anchored" data-anchor-id="adaboost"><span class="header-section-number">11.2</span> Adaboost</h2>
+<section id="adaboost" class="level2" data-number="12.2">
+<h2 data-number="12.2" class="anchored" data-anchor-id="adaboost"><span class="header-section-number">12.2</span> Adaboost</h2>
 <hr>
 <p>에이다부스트 (adaboost)는 adaptive boosting의 줄임말로 인기있는 부스팅 방법 중 하나이다.</p>
 <p>트리뿐만 아니라 다른 예측기들을 통해서도 adaboost를 적용할 수 있다.</p>
@@ -350,34 +358,40 @@ window.Quarto = {
 <li><p>또다시 잘못 분류된 샘플의 가중치를 업데이트한다.</p></li>
 </ul>
 <p><img src="https://jinsu-l.github.io/assets/post_images/image-20191217222322387.png" width="800"></p>
-<section id="훈련" class="level3" data-number="11.2.1">
-<h3 data-number="11.2.1" class="anchored" data-anchor-id="훈련"><span class="header-section-number">11.2.1</span> 훈련</h3>
-<p>자세한 훈련 메카니즘은 구현된 알고리즘에 따라 조금씩 다르다. 아래에 소개된 내용은 기본적인 형태의 AdaBoost에 대한 것이다.</p>
-<p><span style="color:#00008B;">▣ 샘플의 가중치</span></p>
-<p>보다 자세히 살펴보면, <span class="math inline">\(i\)</span>-번째 샘플의 가중치 <span class="math inline">\(w^{(i)}\)</span>는 초기에는 <span class="math inline">\(\frac{1}{m}\)</span>으로 초기화한다. 여기서 <span class="math inline">\(m\)</span>은 데이터의 수.</p>
-<p>첫 번째 예측기가 학습되고, 가중치가 적용된 에러율 <span class="math inline">\(r_1\)</span>을 계산한다.</p>
+<section id="훈련" class="level3" data-number="12.2.1">
+<h3 data-number="12.2.1" class="anchored" data-anchor-id="훈련"><span class="header-section-number">12.2.1</span> 훈련</h3>
+<p>자세한 훈련 메카니즘은 구현된 알고리즘에 따라 조금씩 다르다. 아래에 소개된 내용은 기본적인 형태의 AdaBoost 분류 알고리즘에 대한 것이다.</p>
+<section id="샘플의-가중치" class="level4" data-number="12.2.1.1">
+<h4 data-number="12.2.1.1" class="anchored" data-anchor-id="샘플의-가중치"><span class="header-section-number">12.2.1.1</span> 샘플의 가중치</h4>
+<p>먼저, <span class="math inline">\(i\)</span>-번째 샘플의 가중치 <span class="math inline">\(w^{(i)}\)</span>는 초기에는 <span class="math inline">\(\frac{1}{m}\)</span>으로 초기화한다. 여기서 <span class="math inline">\(m\)</span>은 데이터의 수.</p>
+<p>첫 번째 예측기(약분류기, weak learner)가 학습되고, 가중치가 반영된 에러율 <span class="math inline">\(r_1\)</span>을 계산한다.</p>
 <p>각 차례 <span class="math inline">\(j\)</span>에서 가중치 적용 에러율은 다음과 같다.</p>
 <p><span class="math display">\[
-r_j = \sum_{i=1}^{m} w^{(i)} \cdot \mathbb{1}_{\hat y_j^{(i)} \neq y^{(i)}}
+r_j = \sum_{i=1}^{m} w^{(i)} \cdot \mathbb{1}_{ \{\hat y_j^{(i)} \neq y^{(i)} \} }
 \]</span></p>
 <ul>
-<li><p><span class="math inline">\(j\)</span> 예측기가 잘못 분류한 샘플들의 가중치 비율을 나타낸다. <br><br></p></li>
+<li><p><span class="math inline">\(\hat y_j^{(i)}\)</span>는 <span class="math inline">\(j\)</span>번째 예측기가 <span class="math inline">\(i\)</span>번째 샘플에 대해 예측한 값</p></li>
+<li><p><span class="math inline">\(y^{(i)}\)</span>는 실제 레이블 즉, <span class="math inline">\(r_j\)</span>는 <span class="math inline">\(j\)</span>번째 예측기가 잘못 분류한 샘플들의 가중치 합을 의미한다.</p></li>
 <li><p><span class="math inline">\(r_j\)</span>가 0에 가까울수록 좋은 예측기</p>
 <ul>
-<li>단, <span class="math inline">\(r_j &gt; 0.5\)</span>이면 해당 학습기는 성능이 매우 낮다는 것이므로 제외할 수 있음. <br><br></li>
+<li>단, <span class="math inline">\(r_j &gt; 0.5\)</span>이면 해당 학습기는 성능이 매우 낮다는 것이므로 제외할 수 있음.</li>
 </ul></li>
 </ul>
-<p><span style="color:#00008B;">▣ 학습기의 가중치</span></p>
-<p>알고리즘에 따라 학습기에도 가중치가 적용되는 경우도 있다.</p>
-<p>각 <span class="math inline">\(j\)</span>번째 학습기(learner)에 부여되는 가중치 <span class="math inline">\(\alpha_j\)</span>는 다음과 같다.</p>
+</section>
+<section id="예측기의-가중치" class="level4" data-number="12.2.1.2">
+<h4 data-number="12.2.1.2" class="anchored" data-anchor-id="예측기의-가중치"><span class="header-section-number">12.2.1.2</span> 예측기의 가중치</h4>
+<p>AdaBoost에서는 알고리즘에 따라 예측기에도 가중치가 적용되는 경우도 있다.</p>
+<p>각 <span class="math inline">\(j\)</span>번째 예측기(learner)에 부여되는 가중치 <span class="math inline">\(\alpha_j\)</span>는 다음과 같다.</p>
 <p><span class="math display">\[ \alpha_j = \eta \log \frac{1 - r_j}{r_j} \]</span></p>
 <ul>
-<li><p><span class="math inline">\(r_j\)</span>가 0에 가까울수록, 즉, 예측기가 정확할수록 <span class="math inline">\(\alpha_j\)</span>의 값이 크다. <br><br></p></li>
-<li><p>예측기가 부정확하다면 <span class="math inline">\(\alpha_j\)</span>의 값은 0보다 작을 수도 있다. <br><br></p></li>
-<li><p>여기서 <span class="math inline">\(\eta\)</span>는 학습률 하이퍼파라미터로 기본값은 1이다. <br><br></p></li>
+<li><p><span class="math inline">\(r_j\)</span>가 0에 가까울수록, 즉, 예측기가 정확할수록 <span class="math inline">\(\alpha_j\)</span>의 값이 크다.</p></li>
+<li><p>예측기가 부정확하다면 <span class="math inline">\(\alpha_j\)</span>의 값은 0보다 작을 수도 있다.</p></li>
+<li><p>여기서 <span class="math inline">\(\eta\)</span>는 학습률 하이퍼파라미터로 기본값은 1이다.</p></li>
 </ul>
-<p><span style="color:#00008B;">▣ 업데이트</span></p>
-<p>그 다음 샘플의 가중치를 다음을 이용하여 업데이트한다.</p>
+</section>
+<section id="가중치-업데이트" class="level4" data-number="12.2.1.3">
+<h4 data-number="12.2.1.3" class="anchored" data-anchor-id="가중치-업데이트"><span class="header-section-number">12.2.1.3</span> 가중치 업데이트</h4>
+<p><span class="math inline">\(j\)</span>번째 예측기의 학습이 끝난 후, 각 샘플의 가중치는 다음 규칙에 따라 업데이트된다.</p>
 <p><span class="math display">\[
 w^{(i)}  \leftarrow
 \left\{\begin{array}{ll}
@@ -386,34 +400,43 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 \end{array}\right.
 \]</span></p>
 <ul>
-<li><p>업데이트 된 샘플의 가중치는 다시 $ _{i=1}^{m} w^{(i)}$로 나누어 정규화한다. <br><br></p></li>
-<li><p>좋은 분류기가 예측에 실패했을 때, 실패한 샘플의 가중치가 더 크게 업데이트 된다. <br><br></p></li>
+<li>업데이트 된 샘플의 가중치는 다시 <span class="math inline">\(\sum_{i=1}^{m} w^{(i)}\)</span>로 나누어 정규화한다.</li>
 </ul>
-<p>이 과정을 반복하여 (<span class="math inline">\(j\)</span>를 1부터 증가시키며), 훈련을 마친다.</p>
-<p>보통은 지정된 예측기의 총 수에 도달하거나, 완벽한 예측기가 완성되면 중지한다.</p>
+<p>이 과정의 핵심은 다음과 같다.</p>
+<ul>
+<li>분류에 실패한 샘플의 가중치는 증가한다.</li>
+<li>특히 성능이 좋은 예측기(<span class="math inline">\(\alpha_j\)</span>가 큼)가 실패한 샘플일수록 가중치 증가폭이 크다.</li>
+<li>결과적으로, 이후 학습 단계에서는 이전 단계에서 잘 맞추지 못했던 샘플에 더 많은 관심을 두게 된다.</li>
+</ul>
+<p>이 과정을 <span class="math inline">\(j = 1, 2, \dots\)</span>에 대해 반복하며 학습을 진행한다. 일반적으로는</p>
+<ul>
+<li>사전에 지정된 예측기 개수에 도달하거나,</li>
+<li>에러율이 0인 완벽한 예측기가 등장하면 학습을 종료한다.</li>
+</ul>
 </section>
-<section id="예측" class="level3" data-number="11.2.2">
-<h3 data-number="11.2.2" class="anchored" data-anchor-id="예측"><span class="header-section-number">11.2.2</span> 예측</h3>
-<p>훈련이 완료된 booster에 새로운 <span class="math inline">\(X\)</span>값을 대입하면 booster 내의 각 예측기들이 해당 <span class="math inline">\(X\)</span>에 대한 <span class="math inline">\(y\)</span>를 예측하여 클래스를 반환할 것이다.</p>
+</section>
+<section id="예측" class="level3" data-number="12.2.2">
+<h3 data-number="12.2.2" class="anchored" data-anchor-id="예측"><span class="header-section-number">12.2.2</span> 예측</h3>
+<p>훈련이 완료된 booster에 새로운 <span class="math inline">\(x\)</span>값을 대입하면 booster 내의 각 예측기들이 해당 <span class="math inline">\(x\)</span>에 대한 <span class="math inline">\(y\)</span>를 예측하여 클래스 <span class="math inline">\(\hat y_j(x)\)</span>를 반환할 것이다.</p>
 <ul>
 <li><p>예측기 별로 같은 클래스를 예측할 수도 있고 다른 클래스로 예측할 수도 있다.</p></li>
 <li><p>일반적인 상황이라면 다수결로 클래스를 정하면 된다.</p></li>
 </ul>
-<p>그런데, 각 예측기들의 가중치 (중요도)가 다르므로 이를 감안하여 예측 결과를 종합한다.</p>
-<p>예측을 할 때는 가중치 <span class="math inline">\(\alpha_j\)</span>들의 합을 최대화 하는 클래스가 예측 결과가 된다.</p>
+<p>그런데, AdaBoost에서는 각 예측기들의 가중치 (중요도)가 다르므로 이를 감안하여 가중 다수결을 통해 예측 결과를 종합한다.</p>
+<p>즉, 예측을 할 때는 가중치 <span class="math inline">\(\alpha_j\)</span>들의 합을 최대화 하는 클래스가 예측 결과가 된다.</p>
 <p><span class="math display">\[ \hat y (x) = \arg\max_{k} \sum_{j = 1}^N \alpha_j \cdot \mathbb{1}_{\hat y_j (x) = k} \]</span></p>
 <p>즉, 다수결 투표와 비슷하지만 분류기의 성능에 따라 투표 가중치 <span class="math inline">\(\alpha_j\)</span>를 달리준다. (<span class="math inline">\(\alpha_j =1\)</span>이면 일인 일투표권과 같음)</p>
-<section id="sklearn.ensemble.adaboostclassifier" class="level4" data-number="11.2.2.1">
-<h4 data-number="11.2.2.1" class="anchored" data-anchor-id="sklearn.ensemble.adaboostclassifier"><span class="header-section-number">11.2.2.1</span> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html#sklearn.ensemble.AdaBoostClassifier"><code>sklearn.ensemble.AdaBoostClassifier</code></a></h4>
+<section id="sklearn.ensemble.adaboostclassifier" class="level4" data-number="12.2.2.1">
+<h4 data-number="12.2.2.1" class="anchored" data-anchor-id="sklearn.ensemble.adaboostclassifier"><span class="header-section-number">12.2.2.1</span> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html#sklearn.ensemble.AdaBoostClassifier"><code>sklearn.ensemble.AdaBoostClassifier</code></a></h4>
 <p>Scikit-learn에서 구현된 Adaboost.</p>
-<p>Scikit-learn에서는 SAMME라는 조금 변형된 알고리즘을 사용하며, 다중 클래스 문제에서도 사용할 수 있다.</p>
-<p>SAMME에서 예측기 가중치를 구하는 식은</p>
+<p>Scikit-learn에서는 SAMME혹은 SAMME.R이라는 조금 변형된 알고리즘을 사용하며, 다중(<span class="math inline">\(K\)</span>) 클래스 문제에서도 사용할 수 있다.</p>
+<p>이 알고리즘에서 <span class="math inline">\(j\)</span>번째 예측기 가중치를 구하는 식은</p>
 <p><span class="math display">\[ \alpha_j = \eta  \left( \log \frac{1 - r_j}{r_j} + \log (K-1) \right) \]</span></p>
-<p>이다.</p>
+<p>이다. 많다.</p>
 </section>
 </section>
-<section id="예제" class="level3" data-number="11.2.3">
-<h3 data-number="11.2.3" class="anchored" data-anchor-id="예제"><span class="header-section-number">11.2.3</span> 예제</h3>
+<section id="예제" class="level3" data-number="12.2.3">
+<h3 data-number="12.2.3" class="anchored" data-anchor-id="예제"><span class="header-section-number">12.2.3</span> 예제</h3>
 <p>아래 예제에서 weak classifier로 <code>DecisionTreeClassifier(max_depth=1)</code>를 이용하였다.</p>
 <ul>
 <li>depth=1인 트리는 stump라고도 불리움.</li>
@@ -461,7 +484,7 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-4-output-2.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -488,7 +511,7 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-7-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -500,15 +523,15 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-8-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 <p><code>.estimator_weights_</code> 속성을 통해 각 예측기의 가중치들을 살펴볼 수 있다.</p>
 </section>
-<section id="another-example-the-elements-of-statistical-learning" class="level3" data-number="11.2.4">
-<h3 data-number="11.2.4" class="anchored" data-anchor-id="another-example-the-elements-of-statistical-learning"><span class="header-section-number">11.2.4</span> Another example : The elements of statistical learning</h3>
+<section id="another-example-the-elements-of-statistical-learning" class="level3" data-number="12.2.4">
+<h3 data-number="12.2.4" class="anchored" data-anchor-id="another-example-the-elements-of-statistical-learning"><span class="header-section-number">12.2.4</span> Another example : The elements of statistical learning</h3>
 <p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.datasets.make_hastie_10_2.html"><code>datasets.make_hastie_10_2</code></a>는 2개의 클래스와 10개의 특성을 가진 총 12000개의 데이터 포인트를 생성한다.</p>
 <p>분류 알고리즘의 성능을 평가하기 위한 벤치마크 데이터셋으로 사용된다.</p>
 <div id="a9ffc07e" class="cell" data-execution_count="8">
@@ -540,7 +563,7 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-10-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -612,33 +635,43 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-15-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
 </section>
-<section id="gradient-boosting" class="level2" data-number="11.3">
-<h2 data-number="11.3" class="anchored" data-anchor-id="gradient-boosting"><span class="header-section-number">11.3</span> Gradient boosting</h2>
+<section id="gradient-boosting" class="level2" data-number="12.3">
+<h2 data-number="12.3" class="anchored" data-anchor-id="gradient-boosting"><span class="header-section-number">12.3</span> Gradient boosting</h2>
 <hr>
 <p>또하나의 인기있는 부스팅은 gradient boosting이다.</p>
 <p>Gradient boosting 또한 여러 개의 약한 예측 모델(weak learner)을 조합하여 강한 예측 모델(strong learner)을 만드는 앙상블 학습 방법이다.</p>
-<p>Gradient boosting의 경우 부스팅은 데이터가 아닌 residual(오차) 혹은 gradient를 이용하여 학습하는 개념이다.</p>
+<p>Gradient boosting의 경우 부스팅은 데이터가 아닌 residual(잔차) 혹은 손실 함수의 기울기(gradient)를 이용하여 학습하는 개념이다.</p>
 <ul>
-<li><p>즉, residual <span class="math inline">\(= y_i - \hat y_i = y_i - \hat f(x_i)\)</span>이 점차 작아지도록 학습 <br><br></p></li>
-<li><p>residual은 모형의 예측과 관측값의 차이라는 점에서, 모형의 예측이 잘 들어맞지 않는 부분을 중점적으로 다시 학습하는 방식이다. <br><br></p></li>
+<li><p>즉, residual <span class="math inline">\(= y_i - \hat y_i = y_i - \hat f(x_i)\)</span>이 점차 작아지도록 학습</p></li>
+<li><p>residual은 모형의 예측과 관측값의 차이라는 점에서, 모형의 예측이 잘 들어맞지 않는 부분을 중점적으로 다시 학습하는 방식이다.</p></li>
 <li><p>공부를 할 때 틀린 문제들을 위주로 다시 학습하는 것과 비슷한 원리</p></li>
 </ul>
-<p>
-<font color="#00008B"> &amp;#9635 알고리즘 </font>
-</p>
+<section id="알고리즘" class="level3" data-number="12.3.1">
+<h3 data-number="12.3.1" class="anchored" data-anchor-id="알고리즘"><span class="header-section-number">12.3.1</span> 알고리즘</h3>
+<section id="표기법" class="level4" data-number="12.3.1.1">
+<h4 data-number="12.3.1.1" class="anchored" data-anchor-id="표기법"><span class="header-section-number">12.3.1.1</span> 표기법</h4>
 <p>다음 알고리즘을 살펴보기 전에 다음의 notation을 알아두자.</p>
 <ul>
 <li>$ f_t $ : <span class="math inline">\(t\)</span> 단계에서 적합에 사용되는 작은 트리 (약한 학습기)<br>
 </li>
-<li>$ f^{(t)}$ : 1부터 <span class="math inline">\(t\)</span> 단계까지 생성된 작은 트리들을 모두 합한 부스팅된 모형. (정확히는 학습률을 곱하여 더함)</li>
+<li>$ f^{(t)}$ : 1부터 <span class="math inline">\(t\)</span> 단계까지 생성된 작은 트리들을 모두 합한 부스팅된 모형.
+<ul>
+<li>정확히는 학습률(shrinkage parameter)을 곱하여 더함</li>
+</ul></li>
 </ul>
+<p><span class="math display">\[
+\hat f^{(t)}(x) = \sum_{s=1}^{t} \lambda f_s(x)
+\]</span></p>
+</section>
+<section id="회귀문제에서의-알고리즘" class="level4" data-number="12.3.1.2">
+<h4 data-number="12.3.1.2" class="anchored" data-anchor-id="회귀문제에서의-알고리즘"><span class="header-section-number">12.3.1.2</span> 회귀문제에서의 알고리즘</h4>
 <p>Regression 모형에서 gradient boosting은 다음의 알고리즘을 따른다.</p>
 <ul>
 <li><p><span class="math inline">\(\hat f^{(0)}(x) = 0, \quad  r_i^{(0)} = y_i\)</span>로 한다. <br><br></p></li>
@@ -655,14 +688,15 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 </ul></li>
 </ul></li>
 </ul></li>
-<li><p>최종 모형은 다음과 같다: $f^{(T)} (x) = _{t=1}^{T} f_t(x) $ <br><br></p></li>
+<li><p>최종 모형은 다음과 같다</p></li>
 </ul>
-<p>분류 모형에서도 비슷하게 적용할 수 있으나 residual의 계산 방법이 조금 다르다.</p>
-<ul>
-<li>보통 이 경우에는 손실 함수의 음의 gradient를 사용한다.</li>
-</ul>
-<section id="tree를-이용한-regression-boosting-설명" class="level3" data-number="11.3.1">
-<h3 data-number="11.3.1" class="anchored" data-anchor-id="tree를-이용한-regression-boosting-설명"><span class="header-section-number">11.3.1</span> Tree를 이용한 regression boosting 설명</h3>
+<p><span class="math display">\[\hat f^{(T)} (x) = \sum_{t=1}^{T} \lambda \hat f_t(x) \]</span></p>
+<p>분류(classification) 문제에서도 Gradient Boosting을 유사한 방식으로 적용할 수 있다.</p>
+<p>다만, 이 경우에는 residual 대신 손실 함수의 음의 기울기(negative gradient)를 새로운 목표값으로 사용한다.</p>
+</section>
+</section>
+<section id="tree를-이용한-regression-boosting-설명" class="level3" data-number="12.3.2">
+<h3 data-number="12.3.2" class="anchored" data-anchor-id="tree를-이용한-regression-boosting-설명"><span class="header-section-number">12.3.2</span> Tree를 이용한 regression boosting 설명</h3>
 <p>Gradient boosting은 먼저 regression 문제를 통해 살펴보면 이해하기 쉽다.</p>
 <p>다음 예제는 regression tree를 이용한 gradient boosting의 과정을 설명한다.</p>
 <div id="5f8d6cc4" class="cell" data-execution_count="15">
@@ -758,56 +792,14 @@ w^{(i)} \exp(\alpha_j) , &amp; \text{if }  \hat y_j^{(i)} \neq y^{(i)}  \text{ (
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-23-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="왜-gradient-boosting인가" class="level3" data-number="11.3.2">
-<h3 data-number="11.3.2" class="anchored" data-anchor-id="왜-gradient-boosting인가"><span class="header-section-number">11.3.2</span> 왜 gradient boosting인가?</h3>
-<p>회귀문제에서 손실 함수를</p>
-<p><span class="math display">\[ \ell(y, \hat y) = \frac{1}{2} (y -  \hat y)^2   \]</span></p>
-<p>라고 하자.</p>
-<p>이 loss function의 <span class="math inline">\(\hat y\)</span>에 대한 미분(gradient)을 구하여 <span class="math inline">\(\hat y = \hat f^{(t-1)}(x_i)\)</span>에서 계산하면,</p>
-<p><span class="math display">\[ \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f^{(t-1)}(x_i)} =  \left. \frac{1}{2} \frac{\partial (y -  \hat y)^2}{\partial \hat y} \right|_{\hat y = \hat f^{(t-1)}(x_i)} = - (y_i - \hat  f^{(t-1)}(x_i)) = - r_i\]</span></p>
-<p>즉, 음의 residual이다.</p>
-<p>Gradient boosting의 업데이트 과정을 다시 살펴보면</p>
-<p><span class="math display">\[ \hat f^{(t)}(x_i) = \hat f^{(t-1)}(x_i) + \lambda \hat f_t(x_i) \]</span></p>
-<p>그런데 <span class="math inline">\(\hat f_t\)</span>는 residual <span class="math inline">\(r^{(t-1)}\)</span>에 fitting 되는 것(근사하는 것)이므로, <span class="math inline">\(r^{(t-1)}_i \approx \hat f_t(x_i)\)</span>라고 할 수 있다.</p>
-<p><span class="math display">\[ \hat f^{(t)}(x_i) \approx \hat f^{(t-1)}(x_i) + \lambda r^{(t-1)}_i \]</span></p>
-<p>따라서, <span class="math display">\[ \hat f^{(t)}(x) \approx \hat  f^{(t-1)}(x) - \lambda \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f^{(t-1)}(x)}\]</span></p>
-<p>즉, gradient boosting은 손실함수가 감소하는 방향(음의 gradient)으로 앙상블 모형 <span class="math inline">\(\hat f^{(t)}\)</span>을 업데이트 하는 것이다.</p>
-<p>(<span class="math inline">\(r^{(t-1)}\)</span>에 가장 잘 적합되는 weak learner <span class="math inline">\(\hat f_t\)</span>를 찾는 것은 손실함수의 음의 gradient에 가장 잘 적합하는 <span class="math inline">\(\hat f_t\)</span>를 찾는 것과 동치)</p>
-<ul>
-<li>이는 최적화 문제에서 음의 gradient 방향으로 파라미터 값을 계속 이동하여 어떤 비용함수 <span class="math inline">\(g\)</span>를 최소화하는 점을 찾는 것과 동일한 메카니즘</li>
-</ul>
-<p><span class="math display">\[\hat \theta_{t+1} = \hat \theta_t - \lambda \nabla g(\theta) \]</span></p>
-<section id="임의의-loss-function에-대해서도-적용-가능" class="level4" data-number="11.3.2.1">
-<h4 data-number="11.3.2.1" class="anchored" data-anchor-id="임의의-loss-function에-대해서도-적용-가능"><span class="header-section-number">11.3.2.1</span> 임의의 loss function에 대해서도 적용 가능</h4>
-<p>이 아이디어를 확장하면 편차 제곱 loss function 뿐만 아니라 임의의 loss function에 대해서도 gradient boosting 방법을 적용할 수 있다.</p>
-<p>함수 <span class="math inline">\(f^{(t)}\)</span>가 <span class="math inline">\(t\)</span>단계 모델일 때, 경사하강법 원리에 따라, 다음과 같이 업데이트를 해야 할 것이다.</p>
-<p><span class="math display">\[
-f^{(t)}(x) = f^{(t-1)}(x) - \lambda \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f_i^{(t-1)}(x)}
-\]</span></p>
-<ul>
-<li>이를 함수공간에서의 경사하강법이라고도 한다.</li>
-</ul>
-<p>임의의 loss function <span class="math inline">\(\ell(y, \hat y)\)</span>에 대해, <span class="math inline">\(t\)</span> step에서 weak-learner를 적합할 pseudo-residual을 각 데이터 <span class="math inline">\(i\)</span>에 대해 다음과 같이 정의하면,</p>
-<p><span class="math display">\[ r^{(t-1)}_i = - \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f_i^{(t-1)}(x)} \]</span></p>
-<p>이고, <span class="math inline">\(\hat f_t(x_i) \approx r^{(t-1)}_i\)</span>이므로, 위 업데이트 룰은 다음과 같이 근사된다.</p>
-<p><span class="math display">\[
-f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
-\]</span></p>
-<p>일반적인 Gradient Boost에는 세 가지 주요 구성 요소가 있다.</p>
-<ul>
-<li><p>손실 함수: 손실 함수의 역할은 주어진 데이터로 예측할 때 모델이 얼마나 최선인지 추정하는 것이며, 문제 유형에 따라 다르다.<br><br></p></li>
-<li><p>weak learner : weak learner는 대부분 의사 결정 트리이지만 Gradient Boost에서 다른 모델을 사용할 수도 있다.<br><br></p></li>
-<li><p>additive model : 의사 결정 트리를 한 번에 한 단계씩 추가하는 반복적이고 순차적인 프로세스. 각 반복은 손실 함수의 값을 줄이며, 고정된 수의 트리가 추가되거나 손실이 허용 가능한 수준에 도달하거나 외부 검증 데이터 세트에서 더 이상 개선되지 않으면 훈련이 중지된다.<br><br></p></li>
-</ul>
-</section>
-<section id="sklearn.ensemble.gradientboostingregressor" class="level4" data-number="11.3.2.2">
-<h4 data-number="11.3.2.2" class="anchored" data-anchor-id="sklearn.ensemble.gradientboostingregressor"><span class="header-section-number">11.3.2.2</span> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html"><code>sklearn.ensemble.GradientBoostingRegressor</code></a></h4>
+<section id="sklearn.ensemble.gradientboostingregressor" class="level3" data-number="12.3.3">
+<h3 data-number="12.3.3" class="anchored" data-anchor-id="sklearn.ensemble.gradientboostingregressor"><span class="header-section-number">12.3.3</span> <a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingRegressor.html"><code>sklearn.ensemble.GradientBoostingRegressor</code></a></h3>
 <p>Scikit-learn에서 제공하는 회귀 gradient boosting을 이용하여 보자.</p>
 <ul>
 <li><p><code>max_dept</code> : default 3, 사용할 트리의 최대 깊이</p></li>
@@ -884,7 +876,7 @@ f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-30-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-30-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -926,7 +918,7 @@ f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-31-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-31-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -935,28 +927,93 @@ f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
 <p><code>subsample</code> 매개변수로 조정한다.</p>
 <p>예를들어 <code>subsample = 0.25</code>라면 각 트리는 무작위로 선택한 25%의 훈련샘플을 이용한다.</p>
 </section>
+<section id="왜-gradient-boosting인가" class="level3" data-number="12.3.4">
+<h3 data-number="12.3.4" class="anchored" data-anchor-id="왜-gradient-boosting인가"><span class="header-section-number">12.3.4</span> 왜 gradient boosting인가?</h3>
+<p>Gradient boosting은</p>
+<blockquote class="blockquote">
+<p>손실 함수를 최소화하는 방향(음의 gradient)으로 예측 함수 자체를 점진적으로 업데이트하는 방법이다.</p>
+</blockquote>
+<p>각 단계에서 새로운 weak learner는</p>
+<ul>
+<li>이전 단계 모델이 <strong>가장 잘못 예측한 방향</strong>,</li>
+<li>즉 <strong>손실 함수의 음의 gradient</strong>를 근사하도록 학습된다.</li>
+</ul>
+<section id="제곱오차-손실에서의-해석" class="level4" data-number="12.3.4.1">
+<h4 data-number="12.3.4.1" class="anchored" data-anchor-id="제곱오차-손실에서의-해석"><span class="header-section-number">12.3.4.1</span> 제곱오차 손실에서의 해석</h4>
+<p>회귀문제에서 손실 함수를</p>
+<p><span class="math display">\[ \ell(y, \hat y) = \frac{1}{2} (y -  \hat y)^2   \]</span></p>
+<p>라고 하자.</p>
+<p>이 loss function의 <span class="math inline">\(\hat y\)</span>에 대한 미분(gradient)을 구하여 <span class="math inline">\(\hat y = \hat f^{(t-1)}(x_i)\)</span>에서 계산하면,</p>
+<p><span class="math display">\[ \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f^{(t-1)}(x_i)} =  \left. \frac{1}{2} \frac{\partial (y -  \hat y)^2}{\partial \hat y} \right|_{\hat y = \hat f^{(t-1)}(x_i)} = - (y_i - \hat  f^{(t-1)}(x_i)) = - r_i\]</span></p>
+<p>즉, residual은 손실 함수의 음의 gradient와 정확히 일치한다.</p>
 </section>
-<section id="분류-문제-gradient-boosting" class="level3" data-number="11.3.3">
-<h3 data-number="11.3.3" class="anchored" data-anchor-id="분류-문제-gradient-boosting"><span class="header-section-number">11.3.3</span> 분류 문제 gradient boosting</h3>
+<section id="gradient-boosting-업데이트-구조" class="level4" data-number="12.3.4.2">
+<h4 data-number="12.3.4.2" class="anchored" data-anchor-id="gradient-boosting-업데이트-구조"><span class="header-section-number">12.3.4.2</span> Gradient boosting 업데이트 구조</h4>
+<p>Gradient boosting의 업데이트 과정을 다시 살펴보면</p>
+<p><span class="math display">\[ \hat f^{(t)}(x_i) = \hat f^{(t-1)}(x_i) + \lambda \hat f_t(x_i) \]</span></p>
+<p>그런데 <span class="math inline">\(\hat f_t\)</span>는 residual <span class="math inline">\(r^{(t-1)}\)</span>에 fitting 되는 것(근사하는 것)이므로, <span class="math inline">\(r^{(t-1)}_i \approx \hat f_t(x_i)\)</span>라고 할 수 있다.</p>
+<p><span class="math display">\[ \hat f^{(t)}(x_i) \approx \hat f^{(t-1)}(x_i) + \lambda r^{(t-1)}_i \]</span></p>
+<p>따라서, <span class="math display">\[ \hat f^{(t)}(x) \approx \hat  f^{(t-1)}(x) - \lambda \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f^{(t-1)}(x)}\]</span></p>
+<p>즉, gradient boosting은 손실함수가 감소하는 방향(음의 gradient)으로 앙상블 모형 <span class="math inline">\(\hat f^{(t)}\)</span>을 업데이트 하는 것이다.</p>
+<p>(<span class="math inline">\(r^{(t-1)}\)</span>에 가장 잘 적합되는 weak learner <span class="math inline">\(\hat f_t\)</span>를 찾는 것은 손실함수의 음의 gradient에 가장 잘 적합하는 <span class="math inline">\(\hat f_t\)</span>를 찾는 것과 동치)</p>
+<ul>
+<li>이는 최적화 문제에서 음의 gradient 방향으로 파라미터 공간에서 파라미터 값을 계속 이동하여 어떤 비용함수 <span class="math inline">\(g\)</span>를 최소화하는 점을 찾는 것과 동일한 메카니즘</li>
+</ul>
+<p><span class="math display">\[\hat \theta_{t} = \hat \theta_{t-1} - \lambda \nabla g(\theta)|_{\theta = \hat\theta_{t-1}} \]</span></p>
+<ul>
+<li>이런 관점에서 gradient boosting은 함수 공간에서의 경사하강법이라고도 부름.</li>
+</ul>
+</section>
+<section id="임의의-loss-function에-대해서도-적용-가능" class="level4" data-number="12.3.4.3">
+<h4 data-number="12.3.4.3" class="anchored" data-anchor-id="임의의-loss-function에-대해서도-적용-가능"><span class="header-section-number">12.3.4.3</span> 임의의 loss function에 대해서도 적용 가능</h4>
+<p>이 아이디어를 확장하면 편차 제곱 loss function 뿐만 아니라 임의의 loss function에 대해서도 gradient boosting 방법을 적용할 수 있다.</p>
+<p>함수 <span class="math inline">\(f^{(t)}\)</span>가 <span class="math inline">\(t\)</span>단계 모델일 때, 경사하강법 원리에 따라, 다음과 같이 업데이트를 해야 할 것이다.</p>
+<p><span class="math display">\[
+f^{(t)}(x) = f^{(t-1)}(x) - \lambda \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f_i^{(t-1)}(x)}
+\]</span></p>
+<ul>
+<li>함수공간에서의 경사하강법</li>
+</ul>
+<p>임의의 loss function <span class="math inline">\(\ell(y, \hat y)\)</span>에 대해, <span class="math inline">\(t\)</span> step에서 weak-learner를 적합할 pseudo-residual을 각 데이터 <span class="math inline">\(i\)</span>에 대해 다음과 같이 정의하면,</p>
+<p><span class="math display">\[ r^{(t-1)}_i = - \left. \frac{\partial \ell(y_i, \hat y)}{\partial \hat y} \right|_{\hat y = \hat f_i^{(t-1)}(x)} \]</span></p>
+<p>이고, <span class="math inline">\(\hat f_t(x_i) \approx r^{(t-1)}_i\)</span>이므로, 위 업데이트 룰은 다음과 같이 근사된다.</p>
+<p><span class="math display">\[
+f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
+\]</span></p>
+</section>
+</section>
+<section id="gradient-boosting의-주요-구성-요소" class="level3" data-number="12.3.5">
+<h3 data-number="12.3.5" class="anchored" data-anchor-id="gradient-boosting의-주요-구성-요소"><span class="header-section-number">12.3.5</span> Gradient Boosting의 주요 구성 요소</h3>
+<p>일반적인 Gradient Boosting은 다음의 세 가지 구성 요소로 이루어진다.</p>
+<ul>
+<li><p><strong>손실 함수 (Loss function)</strong> 모델의 예측이 실제값과 얼마나 차이가 나는지를 측정하는 기준이다. Gradient boosting에서는 손실 함수의 <strong>음의 gradient</strong>가 각 단계에서 학습의 목표가 된다.</p></li>
+<li><p><strong>Weak learner</strong> 각 단계에서 손실 함수의 음의 gradient(또는 residual)를 근사하는 약한 예측기이다. 보통은 얕은 의사결정트리가 사용되지만, 다른 회귀 모델도 사용할 수 있다.</p></li>
+<li><p><strong>Additive model</strong> Weak learner를 하나씩 순차적으로 추가하는 가법적 모델이다. 각 단계는 손실 함수를 감소시키는 방향으로 진행되며, 학습은 정해진 반복 횟수에 도달하거나 성능개선이 멈추면 종료된다.</p></li>
+</ul>
+</section>
+<section id="분류-문제-gradient-boosting" class="level3" data-number="12.3.6">
+<h3 data-number="12.3.6" class="anchored" data-anchor-id="분류-문제-gradient-boosting"><span class="header-section-number">12.3.6</span> 분류 문제 gradient boosting</h3>
 <p>분류 문제의 gradient boosting 또한 회귀 문제의 gradient boosting과 매우 흡사하다.</p>
 <p>회귀 문제에서처럼 손실 함수를 정의하고, 손실 함수의 <span class="math inline">\(\hat y_i\)</span>에서의 미분을 통해 그것의 음의 gradient(미분)를 계산한다.</p>
-<p><span style="color:#00008B;">▣ 이진분류 문제</span></p>
+<section id="이진분류-문제" class="level4" data-number="12.3.6.1">
+<h4 data-number="12.3.6.1" class="anchored" data-anchor-id="이진분류-문제"><span class="header-section-number">12.3.6.1</span> 이진분류 문제</h4>
 <p>먼저 이진분류 문제를 생각해 보자.</p>
 <p>만약 손실 함수를 binary cross entropy인</p>
 <p><span class="math display">\[ - y_i \log(\hat p_i) - (1 - y_i) \log(1 - \hat p_i), \quad \hat p_i = \frac{1}{1 + e^{-\hat y_i}}\]</span></p>
-<p>로 정의해 보자. 여기서 <span class="math inline">\(\hat y_i\)</span>는 모델이 출력하는 실수값 (logit)이며, <span class="math inline">\(\hat p_i\)</span>는 이에 대한 sigmoid 변환이다.</p>
-<p>Gradient 정의에 따라 계산 과정을 거치면 residual은</p>
+<p>로 정의해 보자. 여기서 <span class="math inline">\(\hat y_i\)</span>는 모델이 출력하는 실수값 (logit)이며, <span class="math inline">\(\hat p_i\)</span>는 이에 대한 sigmoid 변환(예측확류)이다.</p>
+<p>이 손실 함수를 <span class="math inline">\(\hat y_i\)</span>에 대해 미분한 뒤 음의 gradient를 계산하면, pseudo-residual은 다음과 같이 단순화된다.</p>
 <p><span class="math display">\[ y_i - \hat p_i\]</span></p>
-<p>으로 간단히 나타난다.</p>
 <ul>
-<li>단, 이전에 설명한 것처럼 gradient boosting은 임의의 loss function에 대해 적용할 수 있으며, <span class="math inline">\(\hat y\)</span>에 대한 음의 미분을 residual로 삼을 수 있다.</li>
+<li>단, 이전에 설명한 것처럼 gradient boosting은다른의 loss function에 대서도해 적용할 수 있으며, <span class="math inline">\(\hat y\)</span>에 대한 음의 미분을 residual로 삼을 수 있다.</li>
 </ul>
 <p>주의할 점은 분류 문제라고 할지라도 실제로 훈련되는 트리는 실수값으로 적합되는 regression tree이다. (residual이 실수값이므로)</p>
 <p>따라서, 트리의 예측값은 실수이므로, 예측의 과정에서는 아래의 sigmoid 함수를 이용하여, 앙상블 모형의 예측값인 <span class="math inline">\(\hat y_i\)</span>를 확률값으로 변환하고, 더 높은 확률을 가지는 클래스로 예측한다.</p>
 <p><span class="math display">\[ \hat p_i = \frac{1}{1 + \exp(-\hat y_i)}, \quad 1- \hat p_i = \frac{\exp(-\hat y_i)}{1 + \exp(-\hat y_i)}\]</span></p>
 <p>(즉, 이진 분류 문제의 경우 <span class="math inline">\(\hat p_i &gt; 0.5\)</span>이면 1번 클래스로 아니면 0번 클래스로 분류됨)</p>
-<p><span style="color:#00008B;">▣ 다중 클래스 문제</span></p>
-<p>Multi-class의 경우, <code>sklearn</code>에서는 각 단계에서 <span class="math inline">\(K\)</span>개(class의 수)의 tree들을 생성한다.</p>
+</section>
+<section id="다중-클래스-문제" class="level4" data-number="12.3.6.2">
+<h4 data-number="12.3.6.2" class="anchored" data-anchor-id="다중-클래스-문제"><span class="header-section-number">12.3.6.2</span> 다중 클래스 문제</h4>
+<p>Multi-class의 경우, <code>sklearn</code>에서는 각 boosting 단계에서 <span class="math inline">\(K\)</span>개(class의 수)의 tree들을 생성한다.</p>
 <p>즉, 각 트리는 특정 <span class="math inline">\(k\)</span> 클래스에 속하는지 않는지를 판단하는 트리이며, 이 방식을 One-vs-Rest 전략이라고 한다.</p>
 <ul>
 <li>각 클래스마다 하나의 이진 분류 문제를 만들어 해당 클래스에 속하는지 여부를 판단</li>
@@ -964,8 +1021,8 @@ f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
 <p>예측의 단계에서 각 트리의 앙상블에서 계산된 값은 softmax 함수를 통하여 각 클래스에 속할 확률로 변환된다.</p>
 <p><span class="math display">\[ \frac{e^{\hat y_k}}{\sum_{k=1}^K e^{\hat y_k}} \]</span></p>
 </section>
-<section id="예제-이진-분류-문제" class="level3" data-number="11.3.4">
-<h3 data-number="11.3.4" class="anchored" data-anchor-id="예제-이진-분류-문제"><span class="header-section-number">11.3.4</span> 예제 : 이진 분류 문제</h3>
+<section id="예제-이진-분류-문제" class="level4" data-number="12.3.6.3">
+<h4 data-number="12.3.6.3" class="anchored" data-anchor-id="예제-이진-분류-문제"><span class="header-section-number">12.3.6.3</span> 예제 : 이진 분류 문제</h4>
 <p><a href="https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.GradientBoostingClassifier.html"><code>GradientBoostingClassifier</code></a>와 앞에서 사용한 <code>datasets.make_hastie_10_2</code>의 데이터를 이용한 예제를 이용하여 간단한 분류문제를 테스트해 보자.</p>
 <div id="d06155d9" class="cell" data-execution_count="31">
 <div class="sourceCode cell-code" id="cb38"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> datasets</span>
@@ -1027,7 +1084,7 @@ f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="11. Boosting_files/figure-html/cell-38-output-1.png" class="img-fluid figure-img"></p>
+<p><img src="12. Boosting_files/figure-html/cell-38-output-1.png" class="img-fluid figure-img"></p>
 </figure>
 </div>
 </div>
@@ -1120,8 +1177,9 @@ f^{(t)}(x) \approx f^{(t-1)}(x) + \lambda \hat f_t(x)
 </div>
 </div>
 </section>
-<section id="예제-iris-데이터---multi-class" class="level3" data-number="11.3.5">
-<h3 data-number="11.3.5" class="anchored" data-anchor-id="예제-iris-데이터---multi-class"><span class="header-section-number">11.3.5</span> 예제 : Iris 데이터 - multi class</h3>
+</section>
+<section id="예제-iris-데이터---multi-class" class="level3" data-number="12.3.7">
+<h3 data-number="12.3.7" class="anchored" data-anchor-id="예제-iris-데이터---multi-class"><span class="header-section-number">12.3.7</span> 예제 : Iris 데이터 - multi class</h3>
 <div id="62ede284" class="cell" data-execution_count="46">
 <div class="sourceCode cell-code" id="cb64"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.datasets <span class="im">import</span> load_iris</span>
 <span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
@@ -1238,7 +1296,7 @@ Probability : [0.11312913 0.76884555 0.11802532]</code></pre>
 <p>Binary 문제에서 log odds를 초기값으로 썼던 것과는 조금 다르나, 충분히 많은 estimator들을 사용할 경우 초기값은 크게 중요하지는 않다.</p>
 <p><code>.estimators_</code>는 리스트의 리스트로 구성되어 있다.</p>
 <ul>
-<li>리스트의 첫번째 인덱스는 부트스트랩 단계를 나타내고, 두번째 인덱스는 각 스텝에서 등장하는 트리들의 번호(클래스 번호에 대응)이다.</li>
+<li>리스트의 첫번째 인덱스는 boosting 단계를 나타내고, 두번째 인덱스는 각 스텝에서 등장하는 트리들의 번호(클래스 번호에 대응)이다.</li>
 </ul>
 <p>아래 코드에서는 <code>estimators_</code>에 저장된 트리들을 이용하여 bootstrap 앙상블 결과를 재현한다.</p>
 <p>트리 모형의 예측치들을 합산할 때, <code>gb_clf.learning_rate</code>을 곱해준다.</p>
@@ -1709,13 +1767,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./10. Random forest.html" class="pagination-link" aria-label="Random forest">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Random forest</span></span>
+      <a href="./11. Random forest.html" class="pagination-link" aria-label="Random forest">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Random forest</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./12. XGBoost.html" class="pagination-link" aria-label="XGBoost">
-        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">XGBoost</span></span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./13. XGBoost.html" class="pagination-link" aria-label="XGBoost">
+        <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">XGBoost</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>
