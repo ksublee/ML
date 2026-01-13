@@ -1,8 +1,9 @@
 project:
   type: book
+  output-dir: docs
 
 book:
-  title: "Statistical Machine Learning"
+  title: "Statistical Machine Learning and Data Mining"
   author: "Kyungsub Lee"
   chapters:
     - index.qmd
@@ -14,13 +15,14 @@ book:
     - 06. Resampling.ipynb
     - 07. Regularization.ipynb
     - 08. Tree.ipynb
-    - 09. Bagging.ipynb
-    - 10. Random forest.ipynb
-    - 11. Boosting.ipynb
-    - 12. XGBoost.ipynb
-    - 13. LightGBM.ipynb
-    - 14. Unsupervised.ipynb
-    - 15. SVM.ipynb
+    - 09. Prunning tree.ipynb
+    - 10. Bagging.ipynb
+    - 11. Random forest.ipynb
+    - 12. Boosting.ipynb
+    - 13. XGBoost.ipynb
+    - 14. LightGBM.ipynb
+    - 15. Unsupervised.ipynb
+    - 16. SVM.ipynb
     
 execute:
   freeze: auto
@@ -30,5 +32,7 @@ execute:
 format:
   html:
     theme: cosmo
+    toc: true
+    toc-depth: 3
   #pdf:
     #documentclass: scrbook
