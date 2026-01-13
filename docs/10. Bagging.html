@@ -496,7 +496,7 @@ window.Quarto = {
 <h2 data-number="10.2" class="anchored" data-anchor-id="bagging"><span class="header-section-number">10.2</span> Bagging</h2>
 <hr>
 <p>배깅(bagging)은 <em>bootstrap aggregation</em>의 약자로, 통계적 학습 이론에서 <strong>분산(variance)을 감소시키기 위한 대표적인 방법</strong>이다.</p>
-<p>앙상블 학습의 맥락에서 baggi g은 원래의 학습 데이터로부터 여러 개의 <strong>bootstrap 샘플</strong>을 생성한 뒤, 각 샘플에 대해 동일한 학습 알고리즘을 독립적으로 습시키고 그 예측 결과를 <strong>평균 또는 투표 방식으로 결합</strong>하는 방법이다.</p>
+<p>앙상블 학습의 맥락에서 bagni g은 원래의 학습 데이터로부터 여러 개의 <strong>bootstrap 샘플</strong>을 생성한 뒤, 각 샘플에 대해 동일한 학습 알고리즘을 독립적으로 습시키고 그 예측 결과를 <strong>평균 또는 투표 방식으로 결합</strong>하는 방법이다.</p>
 <p>이 과정을 통해 개별 모델의 불안정 을 완화하고, 전체적인 예측 성능을 향상시키며 과적합(overfitting)을줄일 수 있다.</p>
 <section id="분산-감소-관점에서의-bagging" class="level3" data-number="10.2.1">
 <h3 data-number="10.2.1" class="anchored" data-anchor-id="분산-감소-관점에서의-bagging"><span class="header-section-number">10.2.1</span> 분산 감소 관점에서의 Bagging</h3>
@@ -512,7 +512,7 @@ window.Quarto = {
 <h3 data-number="10.2.2" class="anchored" data-anchor-id="bagging과-결정-트리"><span class="header-section-number">10.2.2</span> Bagging과 결정 트리</h3>
 <p>본 강의에서는 특히 <strong>트리 기반 bagging 모델</strong>을 중심으로 살펴본다.</p>
 <ul>
-<li>결정 트리(decision tree), 특히 **full-grown tre 는 일반적으로 분산이 크고 과적합이 쉽게 발생하는 모델이다.</li>
+<li>결정 트리(decision tree), 특히 <strong>full-grown tree</strong>는 일반적으로 분산이 크고 과적합이 쉽게 발생하는 모델이다.</li>
 <li>그러나 서로 다른 bootstrap 샘플에 대해 학 경우, 각 트리는 상당히 서로 다른 구조를 가지게 된다.</li>
 </ul>
 <p>이러한 특성 때문에 결정 트리는 bagging의 <strong>base estimator</strong>로 매우 적합하다.</p>
@@ -973,7 +973,7 @@ window.Quarto = {
 <p>따라서 훈련에 사용되지 않은 out-of-bag (OOB) 데이터를 이용해 테스트 성능을 시험해 볼 수 있다.</p>
 <p>관찰값 입장에서 보면 <span class="math inline">\(i\)</span>번째 관찰값은 대략 B/3회 정도 테스트에 참여하게 된다.</p>
 <ul>
-<li><span class="math inline">\(i\)</span>번째 관찰값은 각 bootstrap 샘플에 포함되지 않을 확률이 약 <span class="math inline">\(1 - \left(1 - \frac{1}{n}\right)^n \approx \frac{1}{3}\)</span> 이므로, 전체 <span class="math inline">\(B\)</span>개의 모델 중 약 <span class="math inline">\(B/3\)</span>개에서 OOB 테스트에 사용된다.</li>
+<li><span class="math inline">\(i\)</span>번째 관찰값은 각 bootstrap 샘플에 포함되지 않을 확률이 약 <span class="math inline">\(\left(1 - \frac{1}{n}\right)^n \approx \frac{1}{3}\)</span> 이므로, 전체 <span class="math inline">\(B\)</span>개의 모델 중 약 <span class="math inline">\(B/3\)</span>개에서 OOB 테스트에 사용된다.</li>
 </ul>
 <p>예를 들어, classification의 경우 테스트에 참여한 관찰값들의 다수결 투표를 통하여 예측값을 정하고, 실제 <span class="math inline">\(y\)</span>값과 비교하여 테스트 에러를 추정할 수 있다.</p>
 <p>정리하면 다음과 같다.</p>
